@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="float_time_hms assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/float_time_hms/static/src/js/format.js"></script>
+            </xpath>
+        </template>
+    </data>
+</openerp>
