@@ -1,0 +1,20 @@
+<openerp>
+    <data>
+    	
+    	
+    	<record model="ir.ui.view" id="product_template_form_view_lot_seq">
+			<field name="name">product.template.form.lot.seq</field>
+			<field name="model">product.template</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="stock.view_template_property_form"/>
+			<field name="arch" type="xml">
+				<field name="track_outgoing" position="after">
+					<field name="lot_creation_mode" groups="stock.group_production_lot"/>
+					<field name="lot_sequence" attrs="{'invisible': [('lot_creation_mode', '!=', 'auto')]}"/>
+				</field>
+			</field>
+		</record>
+    	
+    	
+    </data>
+</openerp>
