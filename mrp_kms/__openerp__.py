@@ -63,6 +63,7 @@
         'workflow/mrp_workflow.xml',
         
         # Views
+        'views/mrp_consume_view.xml',
         'views/mrp_view.xml',
     ],
     'qweb' : [

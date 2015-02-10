@@ -44,7 +44,7 @@ class mrp_production(models.Model):
     consume_or_produce_pending = fields.Boolean('Has pending moves', compute=_consume_or_produce_pending,
                                                 help='Technical field that calculates if production has pending moves')
     # consumed and produced fields must not show cancelled moves
-    move_lines2 = fields.One2many('stock.move', 'production_id', 'Consumed products',
+    move_lines2 = fields.One2many('stock.move', 'raw_material_production_id', 'Consumed products',
                                   domain=[('state', 'in', ('done',))])
     move_created_ids2 = fields.One2many('stock.move', 'production_id', 'Produced products',
                                          domain=[('state', 'in', ('done',))])

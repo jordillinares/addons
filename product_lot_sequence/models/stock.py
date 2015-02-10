@@ -47,10 +47,9 @@ class stock_production_lot(models.Model):
                        index=True, copy=False, default=_get_lotname)
     origin = fields.Char('Origin', help="Reference of the document in which that lot was created.", index=True)
     destination = fields.Char('Destination', size=200, help="Reference of the the documents in which that lot was used.", index=True)
-
     
     
-    
+        
     
 class stock_transfer_details_items(models.TransientModel):
 

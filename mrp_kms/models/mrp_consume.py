@@ -25,52 +25,64 @@
 from openerp import models, fields, api, tools
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
+from openerp.addons.decimal_precision import decimal_precision as dp
 
+    
+    
 
-
-
-class stock_move_consume(models.Model):
-     
+class stock_move_consume(models.TransientModel):
+      
     _inherit = 'stock.move.consume'
     
-    @api.multi
-    def onchange_qty_or_lot_id(self, product_id, product_uom, restrict_lot_id=False, product_qty=0.0, location_id=False):
-        quant_obj = self.env['stock.quant']
-        product_obj = self.env['product.product']
-        location_obj = self.env['stock.location']
-        lot_obj = self.env['stock.production.lot']
-        warning = {}
-        max_qty = 0.0
-        product = product_obj.browse(product_id)
-        location = location_obj.browse(location_id)
-        if restrict_lot_id:
-            lot = lot_obj.browse(restrict_lot_id)
-            if location_id:
-                max_qty = product.with_context(location=location_id,lot_id=restrict_lot_id).qty_available
-                if product_qty > max_qty:
-                    warning = {
-                        'title': _('Warning!'),
-                        'message': _('You are trying to consume %s %s of lot %s, but there are only available '
-                                     '%s %s on %s.\nQuantity automatically set to maximum available.')
-                               % (product_qty, product.uom_id.name, lot.name, max_qty, product.uom_id.name, location.name),
-                    }
-                    product_qty = max_qty
-        else:
-            if location_id:
-                max_qty = product.with_context(location=location_id).qty_available        
-                if product_qty > max_qty:
-                    warning = {
-                        'title': _('Warning!'),
-                        'message': _('You are trying to consume %s %s of this product, but there are only available '
-                                     '%s %s on %s.\nQuantity automatically set to maximum available.')
-                               % (product_qty, product.uom_id.name, max_qty, product.uom_id.name, location.name),
-                    }
-                    product_qty = max_qty
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        domain = {}
+        context = self._context
+        move = self.env['stock.move'].browse(context['active_id'])   
+        if move.reserved_quant_ids:
+            suggested_quant = move.reserved_quant_ids[0]
+            self.product_qty = suggested_quant.qty
+            self.restrict_lot_id = suggested_quant.lot_id.id
+            # domain for lot_id: Do not show lots with no stock on location_id!
+            # Please note 'ordered_quants_info' variable includes not only reserved quants for the movement, but also
+            # all quants of the product that are not reserved and have a lot_id, thus being able to be selected here.
+            ordered_quants_info = self.env['stock.quant'].quants_get(move.location_id, move.product_id, suggested_quant.qty, domain=['&','|',('reservation_id','=',move.id),('reservation_id','=',False),('qty','>',0)])
+            lot_ids = []
+            for quant, qty in ordered_quants_info:
+                if quant.lot_id and quant.lot_id.id not in lot_ids:
+                    lot_ids.append(quant.lot_id.id)
+            if lot_ids:
+                domain['restrict_lot_id'] = [('id', 'in', lot_ids)]
         return {
-            'value': {
-                'product_qty': product_qty,
-                'restrict_lot_id': restrict_lot_id,
-                'location_id': location_id
-            },
+            'domain': domain,
+        }      
+        
+    @api.onchange('restrict_lot_id')
+    def onchange_lot_id(self):
+        context = self._context
+        warning = {}
+        move = self.env['stock.move'].browse(context['active_id'])
+        if self.restrict_lot_id:
+            max_qty = move.product_id.with_context(location=move.location_id.id, lot_id=self.restrict_lot_id.id).qty_available        
+            if self.product_qty > max_qty:
+                self.product_qty = max_qty
+                
+    @api.onchange('product_qty')
+    def onchange_product_qty(self):
+        context = self._context
+        warning = {}
+        move = self.env['stock.move'].browse(context['active_id'])
+        if self.restrict_lot_id:
+            max_qty = move.product_id.with_context(location=move.location_id.id, lot_id=self.restrict_lot_id.id).qty_available        
+            if self.product_qty > max_qty:
+                warning = {
+                    'title': _('Warning!'),
+                    'message': _('You are trying to consume %s %s of lot %s, but there are only available '
+                                 '%s %s on %s.\nQuantity automatically set to maximum available.')
+                           % (self.product_qty, move.product_id.uom_id.name, self.restrict_lot_id.name, max_qty, move.product_id.uom_id.name, move.location_id.name),
+                }
+                self.product_qty = max_qty
+        return {
             'warning': warning,
         }
+
