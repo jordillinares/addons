@@ -12,6 +12,22 @@
             	</xpath>
             </field>
         </record>
+        
+        
+        
+        
+        
+        <record id="view_production_lot_tree_lot_seq" model="ir.ui.view">
+            <field name="name">stock.production.lot.tree.lot.seq</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+            <field name="arch" type="xml">
+            	<field name="create_date" position="after">
+            		<field name="origin"/>
+            		<field name="destination"/>
+            	</field>
+            </field>
+        </record>
     	
     	
     </data>
