@@ -23,9 +23,77 @@
 ##############################################################################
 
 
-from openerp import models, fields, api, tools
+from openerp import models, fields, api
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
+import time
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools.float_utils import float_compare, float_round
+
+
+class stock_quant(models.Model):
+    
+    _inherit = 'stock.quant'
+    
+    # Please note this module is not dependent from 'product_expiry'. Therefore, here 'super' should be
+    # the 'stock' module's apply_removal_strategy.
+    #===========================================================================
+    # @api.model
+    # def apply_removal_strategy(self, location, product, qty, domain, removal_strategy):
+    # #def apply_removal_strategy(self, cr, uid, location, product, qty, domain, removal_strategy, context=None):
+    #     print self._context
+    #     if removal_strategy == 'fefo':
+    #         domain += [('removal_date', '>=', time.strftime(DEFAULT_SERVER_DATETIME_FORMAT))]
+    #         order = 'removal_date, in_date, id'
+    #         return self._quants_get_order(location, product, qty, domain, order)
+    #     return super(stock_quant, self).apply_removal_strategy(location, product, qty, domain, removal_strategy)
+    #===========================================================================
+    
+    @api.model
+    def _quants_get_order(self, location, product, quantity, domain=[], orderby='in_date'):
+        ''' Implementation of removal strategies
+            If it can not reserve, it will return a tuple (None, qty)
+        '''
+        context = self._context
+        domain += location and [('location_id', 'child_of', location.id)] or []
+        domain += [('product_id', '=', product.id)]
+        if context.get('force_company'):
+            domain += [('company_id', '=', context.get('force_company'))]
+        else:
+            domain += [('company_id', '=', self.env.user.company_id.id)]
+        res = []
+        offset = 0
+        while float_compare(quantity, 0, precision_rounding=product.uom_id.rounding) > 0:
+            quants = self.search(domain, order=orderby, limit=10, offset=offset)
+            if not quants:
+                res.append((None, quantity))
+                break
+            for quant in quants:
+                # Here we implement a change that affects FEFO removal strategy (orderby = 'removal_date, in_date, id'):
+                # If a quant is already expired (removal_date < current date), skip it and send a warning message.
+                if orderby == 'removal_date, in_date, id':
+                    if quant.removal_date and quant.removal_date < time.strftime(DEFAULT_SERVER_DATETIME_FORMAT):
+                        if 'chatter_model' in context and context.get('chatter_model', False) and 'chatter_id' in context and context.get('chatter_id', False):
+                            model = self.env[context['chatter_model']]
+                            try: # maybe our active model class does not inherit from 'mail.thread'
+                                record = model.browse(context['chatter_id'])
+                                message = _("<font style=\"color: red;\">A quant of lot %s has been ignored because it seems to have expired.</font>\nPlease check it and, if needed, remove the whole lot from stock.") % (quant.lot_id.name,)
+                                record.message_post(message, _('Lot expiration warning!'), context=context)
+                            finally:
+                                self._context.pop('chatter_model')
+                                self._context.pop('chatter_id')
+                                pass
+                        continue
+                rounding = product.uom_id.rounding
+                if float_compare(quantity, abs(quant.qty), precision_rounding=rounding) >= 0:
+                    res += [(quant, abs(quant.qty))]
+                    quantity -= abs(quant.qty)
+                elif float_compare(quantity, 0.0, precision_rounding=rounding) != 0:
+                    res += [(quant, quantity)]
+                    quantity = 0
+                    break
+            offset += 10
+        return res
 
 
 class stock_production_lot(models.Model):
@@ -48,8 +116,6 @@ class stock_production_lot(models.Model):
     origin = fields.Char('Origin', help="Reference of the document in which that lot was created.", index=True)
     destination = fields.Char('Destination', size=200, help="Reference of the the documents in which that lot was used.", index=True)
     
-    
-        
     
 class stock_transfer_details_items(models.TransientModel):
 

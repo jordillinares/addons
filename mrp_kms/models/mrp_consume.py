@@ -32,13 +32,16 @@ from openerp.addons.decimal_precision import decimal_precision as dp
 
 class stock_move_consume(models.TransientModel):
       
-    _inherit = 'stock.move.consume'
+    _inherit = 'stock.move.consume'        
+     
+    removal_strategy = fields.Char(string='Removal strategy')
     
     @api.onchange('product_id')
     def onchange_product_id(self):
         domain = {}
         context = self._context
-        move = self.env['stock.move'].browse(context['active_id'])   
+        move = self.env['stock.move'].browse(context['active_id'])
+        self.removal_strategy = self.location_id.get_removal_strategy(self.location_id, self.product_id).upper()
         if move.reserved_quant_ids:
             suggested_quant = move.reserved_quant_ids[0]
             self.product_qty = suggested_quant.qty

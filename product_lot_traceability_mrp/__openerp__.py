@@ -38,8 +38,10 @@ This module enhances Odoo traceability capabilities, by:
 -    Writes manufacturing order number into origin/destination fields of production lots
      when they are consumed/produced.
      
--    #TODO: Make selectable only lots with available qty > 0 in the location where they
-     are needed.
+-    When the 'Check availability' button inside a manufacturing order form view is clicked,
+    it sends context values 'chatter_model' and 'chatter_id' to our custom _quants_get_order
+    (see dependencies). That method skips FEFO lots that have already expired. Here, thanks
+    to the button context, it can be documented in the manufacturing order message thread. 
     
 
 """,
@@ -54,6 +56,7 @@ This module enhances Odoo traceability capabilities, by:
     ],
     'data': [
         'views/stock_view.xml',
+        'views/mrp_view.xml',
     ],
     'qweb' : [
     ],

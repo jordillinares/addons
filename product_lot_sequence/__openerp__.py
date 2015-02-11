@@ -23,6 +23,7 @@
 ##############################################################################
 
 {
+    # TODO: Rename module to 'Product lot enhancement'
     'name' : 'Product lot sequence',
     'version' : '1.0',
     'author' : 'KM Sistemas de información, S.L.',
@@ -33,16 +34,27 @@
 Product lot sequence
 ====================
     
-This module adds the possibility to specify a sequence for a product's lot, be it a received
-product or a manufactured product.
+-   Adds the possibility to specify a sequence for a product's lot, be it a received
+    product or a manufactured product.
 
-It also adds a button in the 'transfer details wizard' that allows to create a new lot number
-on the fly without needing to open a new popup. Please note it only works when product's lot
-creation mode is set to 'auto' and product tracking is enabled any of these three ways: incoming,
-outgoing or all.
+-   Adds a button in the 'transfer details wizard' that allows to create a new lot number
+    on the fly without needing to open a new popup. Please note it only works when product's lot
+    creation mode is set to 'auto' and product tracking is enabled any of these three ways: incoming,
+    outgoing or all.
 
-If a sequence has not been specified for the product and it has creation mode set to 'auto', a
-new lot number is created based on the default 'stock.lot.serial' sequence.
+    If a sequence has not been specified for the product and it has creation mode set to 'auto', a
+    new lot number is created based on the default 'stock.lot.serial' sequence.
+    
+-   Enhances FEFO strategy management: for every quant made available through FEFO strategy, removal
+    date is compared to current date. If it has expired, takes it out from available quants, and issues
+    a warning via message.
+    NOTE: This module does not depend of 'product_expiry', which implements FEFO strategy.
+    
+-   'quants_get_order' implements an extra check for FEFO quants: if a quant has already expired
+    (removal_date < current date), it is taken out from quants calculation. Besides, if the method
+    receives 'chatter_model' and 'chatter_id' in the context, it tries to notify the situation via the
+    active model message thread (provided the active model inherits from mail.thread).
+    
 """,
     'website': 'http://www.kmsistemas.com',
     'depends' : [

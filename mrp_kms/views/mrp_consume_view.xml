@@ -14,6 +14,7 @@
              		<field name="product_qty" class="oe_inline"/>
             	</field>
             	<field name="restrict_lot_id" position="replace">
+             		<field name="removal_strategy" readonly="1"/>
             		<field name="restrict_lot_id" domain="[('product_id','=',product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>
             	</field>
             	<field name="location_id" position="replace">
