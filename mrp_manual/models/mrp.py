@@ -59,7 +59,7 @@ class mrp_production(models.Model):
     @api.multi
     def action_production_end(self):
         for record in self:
-            # Cancel pending consumptions and productions
+            # Cancel pending consumes and productions
             moves = record.move_lines + record.move_created_ids
             moves.action_cancel()
         return super(mrp_production, self).action_production_end()    

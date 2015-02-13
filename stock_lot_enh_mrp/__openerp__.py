@@ -23,39 +23,35 @@
 ##############################################################################
 
 {
-    'name' : 'Product lot traceability MRP',
+    'name' : 'Lot management enhancement in manufacturing',
     'version' : '1.0',
     'author' : 'KM Sistemas de información, S.L.',
     'category' : '',
-    'summary': '',
+    'summary': 'Additional enhancements to lot mananagement in manufacturing.',
     'complexity': 'easy',
     'description' : """
-Product lot traceability MRP
-================
-    
-This module enhances Odoo traceability capabilities, by:
+MRP lot management enhancements:
+================================
 
 -    Writes manufacturing order number into origin/destination fields of production lots
-     when they are consumed/produced.
+     when they are consumed/produced. Both fields are defined in 'stock_lot_enh_base' module.
      
--    When the 'Check availability' button inside a manufacturing order form view is clicked,
-    it sends context values 'chatter_model' and 'chatter_id' to our custom _quants_get_order
-    (see dependencies). That method skips FEFO lots that have already expired. Here, thanks
-    to the button context, it can be documented in the manufacturing order message thread. 
-    
-
+-    When the 'Check availability' button of a manufacturing order form view is clicked,
+    it sends context values 'chatter_model' and 'chatter_id' to custom _quants_get_order
+    That method of 'stock_lot_enh_base' module skips FEFO lots that have already expired.
+    Here, thanks to the button context, it can be documented in the manufacturing order message
+    thread. 
 """,
     'website': 'http://www.kmsistemas.com',
     'depends' : [
         'product',
         'stock',
         'mrp',
-        'product_lot_sequence',
+        'stock_lot_enh_base',
     ],
     'conflicts' : [
     ],
     'data': [
-        'views/stock_view.xml',
         'views/mrp_view.xml',
     ],
     'qweb' : [

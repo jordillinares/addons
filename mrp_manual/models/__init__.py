@@ -23,5 +23,5 @@
 ##############################################################################
 
 import mrp
-import mrp_consume
+import mrp_consume_produce
 #vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

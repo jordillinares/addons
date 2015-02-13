@@ -24,15 +24,15 @@
 
 {
     # TODO: Rename module to 'Product lot enhancement'
-    'name' : 'Product lot sequence',
+    'name' : 'Lot enhancements base',
     'version' : '1.0',
     'author' : 'KM Sistemas de información, S.L.',
     'category' : 'Stock/Traceability',
-    'summary': '',
+    'summary': 'Enhancements to lot management in Odoo',
     'complexity': 'easy',
     'description' : """
-Product lot sequence
-====================
+Lot management enhancements
+===========================
     
 -   Adds the possibility to specify a sequence for a product's lot, be it a received
     product or a manufactured product.
@@ -45,15 +45,19 @@ Product lot sequence
     If a sequence has not been specified for the product and it has creation mode set to 'auto', a
     new lot number is created based on the default 'stock.lot.serial' sequence.
     
--   Enhances FEFO strategy management: for every quant made available through FEFO strategy, removal
-    date is compared to current date. If it has expired, takes it out from available quants, and issues
-    a warning via message.
-    NOTE: This module does not depend of 'product_expiry', which implements FEFO strategy.
-    
 -   'quants_get_order' implements an extra check for FEFO quants: if a quant has already expired
     (removal_date < current date), it is taken out from quants calculation. Besides, if the method
     receives 'chatter_model' and 'chatter_id' in the context, it tries to notify the situation via the
-    active model message thread (provided the active model inherits from mail.thread).
+    chatter_model message thread (provided the model inherits from mail.thread).
+    NOTE: This module does not depend of 'product_expiry', which implements FEFO strategy, because only
+    the variable 'orderby' used by the different removal strategies is checked. We assume 'orderby'
+    clause for a given strategy will not change ever.
+    
+-   Lots tree view now has an 'Available' filter that excludes not used lot numbers. Maybe in further
+    versions this filter also excludes lots without at least one quant with qty > 0 (hide lots with
+    exhausted stocks).
+    
+WARNING: Please note that stock.quant's '_quants_get_order' method is fully overwritten, not inherited.
     
 """,
     'website': 'http://www.kmsistemas.com',

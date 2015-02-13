@@ -35,20 +35,6 @@ class stock_quant(models.Model):
     
     _inherit = 'stock.quant'
     
-    # Please note this module is not dependent from 'product_expiry'. Therefore, here 'super' should be
-    # the 'stock' module's apply_removal_strategy.
-    #===========================================================================
-    # @api.model
-    # def apply_removal_strategy(self, location, product, qty, domain, removal_strategy):
-    # #def apply_removal_strategy(self, cr, uid, location, product, qty, domain, removal_strategy, context=None):
-    #     print self._context
-    #     if removal_strategy == 'fefo':
-    #         domain += [('removal_date', '>=', time.strftime(DEFAULT_SERVER_DATETIME_FORMAT))]
-    #         order = 'removal_date, in_date, id'
-    #         return self._quants_get_order(location, product, qty, domain, order)
-    #     return super(stock_quant, self).apply_removal_strategy(location, product, qty, domain, removal_strategy)
-    #===========================================================================
-    
     @api.model
     def _quants_get_order(self, location, product, quantity, domain=[], orderby='in_date'):
         ''' Implementation of removal strategies
@@ -77,11 +63,12 @@ class stock_quant(models.Model):
                             model = self.env[context['chatter_model']]
                             try: # maybe our active model class does not inherit from 'mail.thread'
                                 record = model.browse(context['chatter_id'])
-                                message = _("<font style=\"color: red;\">A quant of lot %s has been ignored because it seems to have expired.</font>\nPlease check it and, if needed, remove the whole lot from stock.") % (quant.lot_id.name,)
-                                record.message_post(message, _('Lot expiration warning!'), context=context)
+                                message = _("A quant of lot %s has been ignored because it seems to have expired.\nPlease check it and, if needed, remove the whole lot from stock.") % (quant.lot_id.name,)
+                                record.message_post(message, _('An expired lot must be retired!'), context=context)
                             finally:
-                                self._context.pop('chatter_model')
-                                self._context.pop('chatter_id')
+                                # these pops throw an error: raise NotImplementedError("'pop' not supported on frozendict")
+                                #self._context.pop('chatter_model')
+                                #self._context.pop('chatter_id')
                                 pass
                         continue
                 rounding = product.uom_id.rounding

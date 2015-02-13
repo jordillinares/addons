@@ -63,7 +63,6 @@ class stock_move_consume(models.TransientModel):
     @api.onchange('restrict_lot_id')
     def onchange_lot_id(self):
         context = self._context
-        warning = {}
         move = self.env['stock.move'].browse(context['active_id'])
         if self.restrict_lot_id:
             max_qty = move.product_id.with_context(location=move.location_id.id, lot_id=self.restrict_lot_id.id).qty_available        
@@ -89,3 +88,77 @@ class stock_move_consume(models.TransientModel):
             'warning': warning,
         }
 
+
+
+class stock_move_produce(models.TransientModel):
+
+    _name = 'stock.move.produce'
+    _description = 'Produce product'
+    
+    product_id = fields.Many2one('product.product', 'Product', required=True, select=True)
+    product_qty = fields.Float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure'), required=True)
+    product_uom = fields.Many2one('product.uom', 'Product Unit of Measure', required=True)
+    location_id = fields.Many2one('stock.location', 'Location', required=True)
+    location_dest_id = fields.Many2one('stock.location', 'Destination loc.', required=True)
+    lot_id = fields.Many2one('stock.production.lot', 'Lot')
+
+    #TOFIX: product_uom should not be different from product's default uom. Qty should be converted to UOM of original move line before being produced
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(stock_move_produce, self).default_get(cr, uid, fields, context=context)
+        move = self.pool.get('stock.move').browse(cr, uid, context['active_id'], context=context)
+        if 'product_id' in fields:
+            res.update({'product_id': move.product_id.id})
+        if 'product_uom' in fields:
+            res.update({'product_uom': move.product_uom.id})
+        if 'product_qty' in fields:
+            res.update({'product_qty': move.product_uom_qty})
+        if 'location_id' in fields:
+            res.update({'location_id': move.location_id.id})
+        if 'location_dest_id' in fields:
+            res.update({'location_dest_id': move.location_dest_id.id})
+        return res    
+    
+    @api.multi
+    def quick_lot_create(self):
+        for detail in self:
+            if detail.product_id and detail.product_id.lot_creation_mode == 'auto' and \
+                                    (detail.product_id.track_production or \
+                                    detail.product_id.track_all):
+                detail.lot_id = self.env['stock.production.lot'].with_context(product_id=detail.product_id.id).create({})
+            else:
+                raise except_orm(_('Warning!'),
+                                 _('Product lot tracking is not enabled, or lot creation mode is '
+                                   '\'manual\'\n. A new lot number won\'t be automatically created.'))
+        if self and self[0]:
+            return self[0].wizard_view()
+
+    @api.multi
+    def wizard_view(self):
+        view = self.env.ref('mrp_kms.view_stock_move_produce_wizard')
+        return {
+            'name': _('Consume Move'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'stock.move.produce',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'res_id': self.ids[0],
+            'context': self.env.context,
+        }
+    
+    @api.multi
+    def do_move_produce(self):
+        context = self._context
+        move_ids = context['active_ids']
+        move_obj = self.env['stock.move']
+        for record in self:
+            if move_ids and move_ids[0]:
+                move = move_obj.browse(move_ids[0])
+                # Yes, we create a wizard for production very similar to consume wizard, but at the end of both wizards
+                # we use the same 'action_consume' method.
+                move.action_consume(record.product_qty, record.location_id.id, restrict_lot_id=record.lot_id.id)
+        return {'type': 'ir.actions.act_window_close'}

@@ -26,6 +26,11 @@
 						<button name="button_produce_done" string="Close order" states="in_production" icon="gtk-ok"/>
 					</group>
 				</xpath>
+				<xpath expr="//field[@name='move_created_ids']/tree/field[@name='state']" position="after">
+					<button name="%(move_produce)d" string="Produce Products" type="action" context="{'produce': True}" icon="gtk-go-forward" states="assigned"/>
+				</xpath>
+				
+				
 			</field>
 		</record>
     	
