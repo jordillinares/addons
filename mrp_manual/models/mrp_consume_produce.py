@@ -136,7 +136,7 @@ class stock_move_produce(models.TransientModel):
 
     @api.multi
     def wizard_view(self):
-        view = self.env.ref('mrp_kms.view_stock_move_produce_wizard')
+        view = self.env.ref('mrp_manual.view_stock_move_produce_wizard')
         return {
             'name': _('Consume Move'),
             'type': 'ir.actions.act_window',
