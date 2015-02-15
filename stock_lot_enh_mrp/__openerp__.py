@@ -53,6 +53,7 @@ MRP lot management enhancements:
     ],
     'data': [
         'views/mrp_view.xml',
+        'views/stock_view.xml',
     ],
     'qweb' : [
     ],

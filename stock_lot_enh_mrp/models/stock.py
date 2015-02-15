@@ -97,6 +97,146 @@ class stock_move(models.Model):
                                                                                   name)
                             self.pool.get('mrp.production').message_post(cr, uid, [production_id], message,
                                                                          _('Manufactured product'), context=context)
+                            # In our manual consume/produce version, we didn't use 'consumed_for' until here. But here
+                            # we'll assign all already consumed materials that do not have a value in 'consumed_for'
+                            # to this production move.
+                            consume_parent_move_ids = [x.id for x in production.move_lines2 if not x.consumed_for]
+                            self.write(cr, uid, consume_parent_move_ids, {'consumed_for': move.id}, context=context)
         return res
     
+
+class stock_production_lot(models.Model):
     
+    _inherit = 'stock.production.lot'
+    
+    def init(self, cr):
+        """
+        Create pl/pgqsl functions for upstream and downstream lot traceability on module installation"
+        """
+        # Check if pl/pgsql language is present in the DB. If not, install it.
+        cr.execute("select * from pg_language where lanname = 'plpgsql'")
+        if not cr.rowcount:
+            cr.execute("create language 'plpgsql'")
+            
+        # Check if custom SQL type 'prodlot_hierarchy' is present in the DB. If not, create it.
+        # If it exists, delete functions, delete type and recreate all (it's unnecessary on a 
+        # production environment, but very useful while adjusting SQL functions).
+        cr.execute("SELECT 1 FROM pg_type WHERE typname = 'lot_hierarchy';")
+        if cr.rowcount:
+            cr.execute("""SELECT 1 FROM pg_proc WHERE proname = 'trace_lot_up' AND pronargs=1;""")
+            if cr.rowcount:
+                cr.execute("""DROP FUNCTION trace_lot_up(integer);""")
+            cr.execute("""SELECT 1 FROM pg_proc WHERE proname = 'trace_lot_down' AND pronargs=1;""")
+            if cr.rowcount:
+                cr.execute("""DROP FUNCTION trace_lot_down(integer);""")
+            cr.execute("""DROP TYPE lot_hierarchy;""")
+        
+        cr.execute("""
+            CREATE TYPE lot_hierarchy AS (
+                parent_id integer,
+                id integer
+        );""")  
+        
+        cr.execute("""
+            CREATE OR REPLACE FUNCTION trace_lot_up(integer)
+            RETURNS SETOF lot_hierarchy
+            AS
+            $BODY$
+                DECLARE
+                    parent_lot record;
+                    eachlot record;
+                BEGIN
+                    FOR parent_lot IN
+                        SELECT
+                            parent_sm.restrict_lot_id AS this_lot_id,
+                            sm.restrict_lot_id AS related_lot_id
+                        FROM
+                            stock_move sm,
+                            stock_move parent_sm,
+                            stock_production_lot spl
+                        WHERE
+                            parent_sm.consumed_for = sm.id
+                        AND
+                            parent_sm.restrict_lot_id = $1
+                        AND
+                            sm.restrict_lot_id = spl.id
+                        AND
+                            sm.state = 'done'
+                        AND
+                            parent_sm.state = 'done'
+                    LOOP                
+                        FOR eachlot IN
+                            SELECT
+                                *
+                            FROM
+                                trace_lot_up(parent_lot.related_lot_id)
+                        LOOP
+                            return next eachlot;
+                        END LOOP;
+                        return next parent_lot;
+                    END LOOP;    
+                END;
+            $BODY$
+            LANGUAGE 'plpgsql';
+        """)  
+        
+        cr.execute("""
+            CREATE OR REPLACE FUNCTION trace_lot_down(integer)
+            RETURNS SETOF lot_hierarchy
+            AS
+            $BODY$
+                DECLARE
+                    parent_lot record;
+                    eachlot record;
+                BEGIN
+                    FOR parent_lot IN
+                        SELECT
+                            parent_sm.restrict_lot_id AS related_lot_id,
+                            sm.restrict_lot_id AS this_lot_id
+                        FROM
+                            stock_move sm,
+                            stock_move parent_sm,
+                            stock_production_lot spl
+                        WHERE
+                            parent_sm.consumed_for = sm.id
+                        AND
+                            sm.restrict_lot_id = $1
+                        AND
+                            parent_sm.restrict_lot_id = spl.id
+                        AND
+                            sm.state = 'done'
+                        AND
+                            parent_sm.state = 'done'
+                    LOOP                
+                        FOR eachlot IN
+                            SELECT
+                                *
+                            FROM
+                                trace_lot_down(parent_lot.related_lot_id)
+                        LOOP
+                            return next eachlot;
+                        END LOOP;
+                        return next parent_lot;
+                    END LOOP;    
+                END;
+            $BODY$
+            LANGUAGE 'plpgsql';
+        """)
+    
+    def _child_compute(self):
+        for record in self:
+            self.env.cr.execute('SELECT id FROM trace_lot_up(%s) WHERE parent_id = %s' % (record.id, record.id))
+            data = self.env.cr.fetchall()
+            child_ids = [x[0] for x in data if not x[0] in [y.id for y in self]]
+            record.child_complete_ids = self.browse(child_ids)
+    
+    def _parent_compute(self):
+        for record in self:
+            self.env.cr.execute('SELECT parent_id FROM trace_lot_down(%s) WHERE id = %s' % (record.id, record.id))
+            data = self.env.cr.fetchall()
+            parent_ids = [x[0] for x in data if not x[0] in [y.id for y in self]]
+            record.parent_complete_ids = self.browse(parent_ids)
+    
+    
+    child_complete_ids = fields.Many2many(comodel_name='stock.production.lot', string="Lot hierarchy upstream", compute=_child_compute)
+    parent_complete_ids = fields.Many2many(comodel_name='stock.production.lot', string="Lot hierarchy upstream", compute=_parent_compute)

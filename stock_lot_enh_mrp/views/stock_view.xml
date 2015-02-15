@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	
+    	<record id="stock_production_lot_up_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.up.tree</field>
+            <field name="model">stock.production.lot</field>
+            <field name="field_parent">child_complete_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Lots trace-up">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="origin"/>
+                    <field name="destination"/>
+                </tree>
+            </field>
+        </record>
+		<record id="stock_production_lot_up_tree_action" model="ir.actions.act_window">
+            <field name="name">Upstream traceability</field>
+            <field name="res_model">stock.production.lot</field>
+            <field name="view_type">tree</field>
+            <field name="view_id" ref="stock_production_lot_up_tree"/>
+            <field name="domain">[('id','=',active_id)]</field>
+        </record>
+		
+		
+		
+		<record id="stock_production_lot_down_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.down.tree</field>
+            <field name="model">stock.production.lot</field>
+            <field name="field_parent">parent_complete_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Lots trace-down">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="origin"/>
+                    <field name="destination"/>
+                </tree>
+            </field>
+        </record>
+   		<record id="stock_production_lot_down_tree_action" model="ir.actions.act_window">
+            <field name="name">Downstream traceability</field>
+            <field name="res_model">stock.production.lot</field>
+            <field name="view_type">tree</field>
+            <field name="view_id" ref="stock_production_lot_down_tree"/>
+            <field name="domain">[('id','=',active_id)]</field>
+        </record>
+        
+    	
+    	
+    	<record id="view_production_lot_form_lot_enh_mrp" model="ir.ui.view">
+            <field name="name">stock.production.lot.form</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@name='action_traceability']" position="replace">
+            		<button name="%(stock_lot_enh_mrp.stock_production_lot_up_tree_action)d" type="action" icon="fa-arrow-up" class="oe_stat_button" string="Trace up" attrs="{'invisible': [('quant_ids','=',[])]}" help="Get upstream traceability of this lot (i.e, manufactured lots for which this one is a component)."/>
+            		<button name="%(stock_lot_enh_mrp.stock_production_lot_down_tree_action)d" type="action" icon="fa-arrow-down" class="oe_stat_button" string="Trace down" attrs="{'invisible': [('quant_ids','=',[])]}" help="Get downstream traceability of this lot (i.e, its component lots)."/>
+            	</xpath>
+            </field>
+        </record>
+    	
+    </data>
+</openerp>
