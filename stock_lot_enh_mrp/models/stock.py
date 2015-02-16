@@ -240,3 +240,16 @@ class stock_production_lot(models.Model):
     
     child_complete_ids = fields.Many2many(comodel_name='stock.production.lot', string="Lot hierarchy upstream", compute=_child_compute)
     parent_complete_ids = fields.Many2many(comodel_name='stock.production.lot', string="Lot hierarchy upstream", compute=_parent_compute)
+    
+    @api.multi
+    def from_hierarchy_open_lot_form(self):
+        # Action called from the server action linked to the tree_but_open in the lots hierarchical view
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Lot'),
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_model': 'stock.production.lot',
+            'res_id': self and self[0].id or False,
+            'views': [(False, 'form')],
+        } 

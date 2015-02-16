@@ -17,6 +17,18 @@
         
         
         
+        <record id="view_production_lot_form_lot_seq" model="ir.ui.view">
+            <field name="name">stock.production.lot.form.lot.seq</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+            	<field name="ref" position="after">
+            		<field name="origin" readonly="1"/>
+            		<field name="destination" readonly="1"/>
+            	</field>
+            </field>
+        </record>
+        
         <record id="view_production_lot_tree_lot_seq" model="ir.ui.view">
             <field name="name">stock.production.lot.tree.lot.seq</field>
             <field name="model">stock.production.lot</field>
@@ -32,8 +44,6 @@
     	
     	
     	
-    	<!-- EXPERIMENTAL: Filter to hide lots with no quants (not used or with no stock available).
-    	It's used in lots tree view only for clarity purposes. -->
     	<record model="ir.ui.view" id="search_product_lot_filter_lot_seq">
             <field name="name">Production Lots Filter</field>
             <field name="model">stock.production.lot</field>
@@ -41,6 +51,9 @@
             <field name="arch" type="xml">
             	<field name="product_id" position="after">
             		<filter string="Used" name="used" domain="[('quant_ids','!=',False)]" help="Show only used lots. This filter explicitly excludes not used lot numbers."/>
+            		<separator/>
+            		<field name="origin"/>
+            		<field name="destination"/>
             	</field>
             </field>
         </record>

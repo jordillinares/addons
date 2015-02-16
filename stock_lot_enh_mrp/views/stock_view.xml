@@ -60,6 +60,23 @@
             	</xpath>
             </field>
         </record>
+        
+        
+        <!-- Open a lot's form view when double clicking on its row in a hierarchical tree view -->
+		<!-- A window action can't open a form view of the lot on which we have double-clicked
+		Instead, we link the tree_but_open qualifier to a server action that returns the form view of the selected row -->
+		<record id="action_lot_form" model="ir.actions.server">
+		    <field name="name">Show lot form</field>
+		    <field name="model_id" ref="model_stock_production_lot"/>
+		    <field name="state">code</field>
+		    <field name="code">action = obj.from_hierarchy_open_lot_form()</field>
+		</record>
+		<record model="ir.values" id="ir_show_lot">
+			<field name="key2">tree_but_open</field>
+			<field name="model">stock.production.lot</field>
+			<field name="name">Show lot form</field>
+			<field name="value" eval="'ir.actions.server,%d'%action_lot_form"/>
+		</record>
     	
     </data>
 </openerp>
