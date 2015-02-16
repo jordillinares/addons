@@ -40,8 +40,9 @@ Lot management enhancements
 -   Adds a button in the 'transfer details wizard' that allows to create a new lot number
     on the fly without needing to open a new popup. Please note it only works when product's lot
     creation mode is set to 'auto' and product tracking is enabled any of these three ways: incoming,
-    outgoing or all.
-
+    outgoing or all. Furthermore, button visibility is determined by a calculated boolean technical
+    field: 'allows_quick_lot_creating', which is only true when transfer action is linked to an
+    incoming picking.
     If a sequence has not been specified for the product and it has creation mode set to 'auto', a
     new lot number is created based on the default 'stock.lot.serial' sequence.
     

@@ -131,6 +131,15 @@ class stock_transfer_details_items(models.TransientModel):
 
     _inherit = 'stock.transfer_details_items'
     
+    def _get_quick_lot_creation_allowed(self):
+        for detail in self:
+            if detail.packop_id and detail.packop_id.picking_id and detail.packop_id.picking_id.picking_type_code == 'incoming':
+                detail.allows_quick_lot_creating = True
+            else:
+                detail.allows_quick_lot_creating = False
+    
+    allows_quick_lot_creating = fields.Boolean('Quick lot creation allowed', compute=_get_quick_lot_creation_allowed, help="Technical field that determines if quick lot creation button is shown for each detail row in transfer wizard.")
+    
     @api.multi
     def quick_lot_create(self):
         for detail in self:
