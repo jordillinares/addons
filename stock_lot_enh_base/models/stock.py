@@ -31,6 +31,29 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.tools.float_utils import float_compare, float_round
 
 
+class stock_picking(models.Model):
+    
+    _inherit = 'stock.picking'
+    
+    @api.multi
+    def do_transfer(self):
+        res = super(stock_picking, self).do_transfer()
+        self.refresh()
+        for picking in self:
+            if picking.picking_type_code != 'incoming':
+                for move in picking.move_lines:
+                    if move.linked_move_operation_ids:
+                        for operation_link in move.linked_move_operation_ids:
+                            if operation_link.operation_id.lot_id:
+                                destination_list = []
+                                add_destination = picking.name
+                                if operation_link.operation_id.lot_id.destination: destination_list += operation_link.operation_id.lot_id.destination.split(", ")
+                                if add_destination not in destination_list:  destination_list.append(add_destination)
+                                destination = ", ".join(destination_list) or False
+                                if destination: operation_link.operation_id.lot_id.destination = destination
+        return res    
+
+
 class stock_quant(models.Model):
     
     _inherit = 'stock.quant'

@@ -45,6 +45,18 @@ Lot management enhancements
     If a sequence has not been specified for the product and it has creation mode set to 'auto', a
     new lot number is created based on the default 'stock.lot.serial' sequence.
     
+-    Adds two new char fields to production lot, aimed to give useful information on lots traceability:
+    -   _origin:_ this field is automatically filled when a new lot is created, i.e. on product receival
+        or manufacturing (the latter is implemented in 'stock_lot_enh_mrp' module). It shows a unique
+        reference for the name of the incoming picking or manufacturing order.
+    -   _destination:_ this field is automatically filled each time a given lot is moved on a picking
+        of type internal or outgoing ('stock_lot_enh_mrp' writes also here the name of the manufacturing
+        order when a raw material lot is consumed).
+    Please note that 'origin' references an unique record, while 'destination' can contain references to
+    multiple records of different models. #TODO: Develop a 'multi_many2many_list' field type and widget
+    that allows to show links to different records from different models from inside a single labels-type
+    field. That would greatly improve traceability UX!
+    
 -   'quants_get_order' implements an extra check for FEFO quants: if a quant has already expired
     (removal_date < current date), it is taken out from quants calculation. Besides, if the method
     receives 'chatter_model' and 'chatter_id' in the context, it tries to notify the situation via the
