@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+	
+	<t t-name="MultiReference">
+		<ul style="list-style-type: none;-moz-padding-start: 0; -webkit-padding-start: 0; -khtml-padding-start: 0; -o-padding-start: 0; padding-start: 0;">
+		    <t t-foreach="widget.get('value').split(';')" t-as="tuple">
+				<li class="oe_form_field oe_form_field_many2one" style="display: inline;">
+			         <a href="#" class="oe_form_uri" t-att-data-index="tuple"></a>
+			    </li>
+		    </t>
+		</ul>
+	</t>
+	
+
+</templates>

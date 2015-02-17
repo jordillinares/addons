@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	
+    	<template id="assets_backend" name="kms_graph assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/multi_m2o_text_widget/static/src/js/multi_reference_widget.js"></script>
+            </xpath>
+        </template>
+    	
+    	
+    </data>
+</openerp>

@@ -77,6 +77,7 @@ WARNING: Please note that stock.quant's '_quants_get_order' method is fully over
     'depends' : [
         'product',
         'stock',
+        'multi_m2o_text_widget',
     ],
     'conflicts' : [
     ],
