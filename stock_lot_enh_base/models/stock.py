@@ -40,17 +40,26 @@ class stock_picking(models.Model):
         res = super(stock_picking, self).do_transfer()
         self.refresh()
         for picking in self:
-            if picking.picking_type_code != 'incoming':
-                for move in picking.move_lines:
-                    if move.linked_move_operation_ids:
-                        for operation_link in move.linked_move_operation_ids:
-                            if operation_link.operation_id.lot_id:
-                                destination_list = []
-                                add_destination = picking.name
-                                if operation_link.operation_id.lot_id.destination: destination_list += operation_link.operation_id.lot_id.destination.split(", ")
-                                if add_destination not in destination_list:  destination_list.append(add_destination)
-                                destination = ", ".join(destination_list) or False
+            for move in picking.move_lines:
+                if move.linked_move_operation_ids:
+                    for operation_link in move.linked_move_operation_ids:
+                        if operation_link.operation_id.lot_id:
+                            reference_list = []
+                            # Why this data format? see multi_m2o_text_widget module description.
+                            add_reference = 'stock.picking,%s' % picking.id
+                            # Write destination (reference to picking) on internal/outgoing pickings
+                            if picking.picking_type_code != 'incoming':
+                                if operation_link.operation_id.lot_id.destination: reference_list += operation_link.operation_id.lot_id.destination.split(";")
+                                if add_reference not in reference_list:  reference_list.append(add_reference)
+                                destination = ";".join(reference_list) or False
                                 if destination: operation_link.operation_id.lot_id.destination = destination
+                            # Write origin (reference to picking) on incoming pickings
+                            else:
+                                if operation_link.operation_id.lot_id.origin: reference_list += operation_link.operation_id.lot_id.origin.split(";")
+                                if add_reference not in reference_list:  reference_list.append(add_reference)
+                                origin = ";".join(reference_list) or False
+                                if origin: operation_link.operation_id.lot_id.origin = origin
+                                
         return res    
 
 
@@ -123,8 +132,8 @@ class stock_production_lot(models.Model):
     
     name = fields.Char('Lot number', required=True, help="Unique lot/serial alphanumeric code.",
                        index=True, copy=False, default=_get_lotname)
-    origin = fields.Char('Origin', help="Reference of the document in which that lot was created.", index=True)
-    destination = fields.Char('Destination', size=200, help="Reference of the the documents in which that lot was used.", index=True)
+    origin = fields.Char('Origin', size=200, help="Reference of the document in which this lot was created (received or manufactured).", index=True)
+    destination = fields.Char('Destination', size=200, help="Reference of the the documents in which this lot was used (consumed or served).", index=True)
     
     
 class stock_transfer_details_items(models.TransientModel):

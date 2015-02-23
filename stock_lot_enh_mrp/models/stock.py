@@ -56,16 +56,17 @@ class stock_move(models.Model):
                         production = production_obj.browse(cr, uid, production_id, context=context)
                         add_destination = ""
                         if production:
-                            add_destination = production.name
+                            # Why this data format? see multi_m2o_text_widget module description.
+                            add_destination = "mrp.production,%s" % production.id
                         for lot in move.lot_ids:
                             message = _("%s %s of lot %s of %s have been consumed.") % (move.product_qty,
                                                                                               move.product_uom.name,
                                                                                               lot.name, name)
                             if add_destination:
                                 destination_list = []
-                                if lot.destination: destination_list += lot.destination.split(", ")
+                                if lot.destination: destination_list += lot.destination.split(";")
                                 if add_destination not in destination_list:  destination_list.append(add_destination)
-                                destination = ", ".join(destination_list)
+                                destination = ";".join(destination_list)
                                 lot_obj.write(cr, uid, [lot.id], {'destination': destination, })
                             else:
                                 message = _("%s %s of %s have been consumed.") % (move.product_qty,
@@ -80,16 +81,17 @@ class stock_move(models.Model):
                         production = production_obj.browse(cr, uid, production_id, context=context)
                         add_origin = ""
                         if production:
-                            add_origin = production.name
+                            # Why this data format? see multi_m2o_text_widget module description.
+                            add_origin = "mrp.production,%s" % production.id
                         for lot in move.lot_ids:
                             message = _("%s %s of lot %s of %s have been produced.") % (move.product_qty,
                                                                                               move.product_uom.name,
                                                                                               lot.name, name)
                             if add_origin:
                                 origin_list = []
-                                if lot.origin: origin_list += lot.origin.split(", ")
+                                if lot.origin: origin_list += lot.origin.split(";")
                                 if add_origin not in origin_list:  origin_list.append(add_origin)
-                                origin = ", ".join(origin_list)
+                                origin = ";".join(origin_list)
                                 lot_obj.write(cr, uid, [lot.id], {'origin': origin, })
                             else:
                                 message = _("%s %s of %s have been produced.") % (move.product_qty,

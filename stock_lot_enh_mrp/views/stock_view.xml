@@ -11,8 +11,8 @@
                 <tree string="Lots trace-up">
                     <field name="name"/>
                     <field name="product_id"/>
-                    <field name="origin"/>
-                    <field name="destination"/>
+                    <field name="origin" widget="multi_reference"/>
+                    <field name="destination" widget="multi_reference"/>
                 </tree>
             </field>
         </record>
@@ -34,8 +34,8 @@
                 <tree string="Lots trace-down">
                     <field name="name"/>
                     <field name="product_id"/>
-                    <field name="origin"/>
-                    <field name="destination"/>
+                    <field name="origin" widget="multi_reference"/>
+                    <field name="destination" widget="multi_reference"/>
                 </tree>
             </field>
         </record>

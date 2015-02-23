@@ -48,6 +48,7 @@ MRP lot management enhancements:
         'stock',
         'mrp',
         'stock_lot_enh_base',
+        'multi_m2o_text_widget',
     ],
     'conflicts' : [
     ],

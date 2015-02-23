@@ -24,27 +24,28 @@
             <field name="inherit_id" ref="stock.view_production_lot_form"/>
             <field name="arch" type="xml">
             	<field name="ref" position="after">
-            		<field name="origin" readonly="1"/>
+            		<field name="origin" readonly="1" widget="multi_reference"/>
             		<field name="destination" readonly="1" widget="multi_reference"/>
             	</field>
             </field>
         </record>
         
+        <!-- While a tree view 'multi_reference' widged is developed, whe hide these fields -->
         <record id="view_production_lot_tree_lot_seq" model="ir.ui.view">
             <field name="name">stock.production.lot.tree.lot.seq</field>
             <field name="model">stock.production.lot</field>
             <field name="inherit_id" ref="stock.view_production_lot_tree"/>
             <field name="arch" type="xml">
             	<field name="create_date" position="after">
-            		<field name="origin"/>
-            		<field name="destination"/>
+            		<field name="origin" widget="multi_reference"/>
+            		<field name="destination" widget="multi_reference"/>
             	</field>
             </field>
         </record>
     	
     	
     	
-    	
+    	<!-- While a tree view 'multi_reference' widged is developed, whe hide these fields -->
     	<record model="ir.ui.view" id="search_product_lot_filter_lot_seq">
             <field name="name">Production Lots Filter</field>
             <field name="model">stock.production.lot</field>
@@ -53,11 +54,11 @@
             	<field name="product_id" position="after">
             		<filter string="Used" name="used" domain="[('quant_ids','!=',False)]" help="Show only used lots. This filter explicitly excludes not used lot numbers."/>
             		<separator/>
-            		<field name="origin"/>
-            		<field name="destination"/>
+            		<!-- <field name="origin"/>
+            		<field name="destination"/> -->
             	</field>
             </field>
-        </record>
+        </record> 
     	<record id="stock.action_production_lot_form" model="ir.actions.act_window">
             <field name="name">Lot numbers</field>
             <field name="context">{'search_default_used':1}</field>
