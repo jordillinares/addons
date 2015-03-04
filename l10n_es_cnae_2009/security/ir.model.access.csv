@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cnae2009_user,cnae2009 user,model_cnae2009,,1,1,1,0
+

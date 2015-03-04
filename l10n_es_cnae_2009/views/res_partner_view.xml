@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	
+    	<record id="view_partner_property_form_cnae2009" model="ir.ui.view">
+            <field name="name">res.partner.property.form.cnae2009</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//notebook/page[last()]" position="after">
+            		<page name="economic_activity" string="Economic activity" attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}">
+            			<group name="googleinfo">
+            				<group colspan="4" string="Economic activity information">
+		        				<field name="cnae2009_ids" widget="many2many_tags"/>
+		        			</group>
+            			</group>
+            		</page>
+            		<page name="economic_activity_disabled" string="Economic activity" attrs="{'invisible': ['|',('is_company','=',True),('parent_id','=',False)]}">
+            			<div>
+	                        <p>Economic activity data are managed on <button name="open_commercial_entity" type="object" string="the parent company" class="oe_link"/></p>
+	                    </div>
+            		</page>
+            	</xpath>
+            </field>
+        </record>
+    	
+    	
+    </data>
+</openerp>

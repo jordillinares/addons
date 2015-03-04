@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	
+    	<record model="ir.ui.view" id="crm_case_form_view_leads_cnae2009">
+	        <field name="name">CRM - Leads Form</field>
+	        <field name="model">crm.lead</field>
+	        <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+	        <field name="arch" type="xml">
+	        	<xpath expr="//notebook/page[last()]" position="after">
+	        		<page name="economic_activity" string="Economic activity">
+		        		<group name="googleinfo">
+		        			<group colspan="4" string="Activity">
+		        				<field name="cnae2009_ids" widget="many2many_tags"/>
+		        			</group>
+		        		</group>
+	        		</page>
+	        	</xpath>
+	        </field>
+        </record>
+    	
+    	
+    </data>
+</openerp>

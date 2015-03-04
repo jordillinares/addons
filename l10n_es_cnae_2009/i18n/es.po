@@ -1,0 +1,145 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_es_cnae_2009
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-03 16:31+0000\n"
+"PO-Revision-Date: 2015-03-03 16:31+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_es_cnae_2009
+#: view:cnae2009:l10n_es_cnae_2009.cnae2009_form_view
+#: view:cnae2009:l10n_es_cnae_2009.cnae2009_tree_view
+#: model:ir.actions.act_window,name:l10n_es_cnae_2009.action_cnae2009_tree_view
+#: model:ir.ui.menu,name:l10n_es_cnae_2009.menu_cnae2009
+msgid "CNAE Codes"
+msgstr "Códigos CNAE"
+
+#. module: l10n_es_cnae_2009
+#: code:addons/l10n_es_cnae_2009/models/cnae_2009.py:82
+#, python-format
+msgid "CNAE code"
+msgstr "Código CNAE"
+
+#. module: l10n_es_cnae_2009
+#: field:crm.lead,cnae2009_ids:0
+#: field:res.partner,cnae2009_ids:0
+msgid "CNAE codes"
+msgstr "Códigos CNAE"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,child_ids:0
+msgid "Child codes"
+msgstr "Códigos"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,code:0
+msgid "Code"
+msgstr "Código"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,create_date:0
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,description:0
+msgid "Description"
+msgstr "Descripción"
+
+#. module: l10n_es_cnae_2009
+#: view:res.partner:l10n_es_cnae_2009.view_partner_property_form_cnae2009
+msgid "Economic activity"
+msgstr "Actividad económica"
+
+#. module: l10n_es_cnae_2009
+#: view:res.partner:l10n_es_cnae_2009.view_partner_property_form_cnae2009
+msgid "Economic activity data are managed on"
+msgstr "Los datos de actividad económica se gestionan desde la"
+
+#. module: l10n_es_cnae_2009
+#: view:crm.lead:l10n_es_cnae_2009.crm_case_form_view_leads_cnae2009
+#: view:res.partner:l10n_es_cnae_2009.view_partner_property_form_cnae2009
+msgid "Economic activity information"
+msgstr "Información de actividad económica"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización de"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: l10n_es_cnae_2009
+#: model:ir.model,name:l10n_es_cnae_2009.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Iniciativa/Oportunidad"
+
+#. module: l10n_es_cnae_2009
+#: view:cnae2009:l10n_es_cnae_2009.cnae2009_form_view
+msgid "Leads"
+msgstr "Iniciativas"
+
+#. module: l10n_es_cnae_2009
+#: view:cnae2009:l10n_es_cnae_2009.cnae2009_form_view
+#: field:cnae2009,lead_ids:0
+msgid "Leads under this CNAE code"
+msgstr "Iniciativas bajo este epígrafe"
+
+#. module: l10n_es_cnae_2009
+#: model:ir.actions.server,name:l10n_es_cnae_2009.action_cnae2009_form
+msgid "Open CNAE code form"
+msgstr "Abrir vista formulario del código CNAE"
+
+#. module: l10n_es_cnae_2009
+#: field:cnae2009,parent_id:0
+msgid "Parent code"
+msgstr "Código padre"
+
+#. module: l10n_es_cnae_2009
+#: model:ir.model,name:l10n_es_cnae_2009.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: l10n_es_cnae_2009
+#: view:cnae2009:l10n_es_cnae_2009.cnae2009_form_view
+msgid "Partners"
+msgstr "Empresas"
+
+#. module: l10n_es_cnae_2009
+#: view:cnae2009:l10n_es_cnae_2009.cnae2009_form_view
+#: field:cnae2009,partner_ids:0
+msgid "Partners under this CNAE code"
+msgstr "Empresas bajo este epígrafe"
+
+#. module: l10n_es_cnae_2009
+#: model:ir.model,name:l10n_es_cnae_2009.model_cnae2009
+msgid "Spanish Economic Activity CNAE 2009"
+msgstr "Listado CNAE 2009 de actividades económicas"
+
+#. module: l10n_es_cnae_2009
+#: view:res.partner:l10n_es_cnae_2009.view_partner_property_form_cnae2009
+msgid "the parent company"
+msgstr "compañía matriz"
+

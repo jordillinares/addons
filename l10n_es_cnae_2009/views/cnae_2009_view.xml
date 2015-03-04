@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	
+    	<record model="ir.ui.view" id="cnae2009_form_view">
+			<field name="name">cnae2009.form</field>
+			<field name="model">cnae2009</field>
+			<field name="arch" type="xml">
+				<form string="CNAE Codes">
+					<field name="parent_id"/>
+					<field name="code"/>
+					<field name="description" select="1"/>
+					<notebook>
+	                    <page string="Leads">
+	                        <group>
+	                        	<separator string="Leads under this CNAE code"/>
+	                        	<field name="lead_ids"/>
+	                        </group>
+	                    </page>
+	                    <page string="Partners">
+	                        <group>
+	                        	<separator string="Partners under this CNAE code"/>
+	                        	<field name="partner_ids"/>
+	                        </group>
+	                    </page>
+	                </notebook>
+				</form>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="cnae2009_tree_view">
+			<field name="name">cnae2009.tree</field>
+            <field name="model">cnae2009</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+            	<tree string="CNAE Codes">
+            		<field name="code"/>
+                	<field name="description"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_cnae2009_tree_view">
+			<field name="name">CNAE Codes</field>
+    		<field name="type">ir.actions.act_window</field>
+        	<field name="res_model">cnae2009</field>
+        	<field name="view_type">tree</field>
+        	<field name="view_id" ref="cnae2009_tree_view"/>
+        	<field name="domain">[('parent_id','=',False)]</field>
+    	</record>
+
+		<!-- Open a CNAE record form view when double clicking on its row in a hierarchical tree view -->
+		<record id="action_cnae2009_form" model="ir.actions.server">
+		    <field name="name">Open CNAE code form</field>
+		    <field name="model_id" ref="model_cnae2009"/>
+		    <field name="state">code</field>
+		    <field name="code">action = obj.from_hierarchy_open_form()</field>
+		</record>
+		<record model="ir.values" id="ir_show_lot">
+			<field name="key2">tree_but_open</field>
+			<field name="model">cnae2009</field>
+			<field name="name">Open CNAE code form</field>
+			<field name="value" eval="'ir.actions.server,%d'%action_cnae2009_form"/>
+		</record>
+
+		<menuitem id="menu_cnae2009" action="action_cnae2009_tree_view" parent="base.menu_crm_config_lead" sequence="60"/>
+
+    	
+    	
+    </data>
+</openerp>
