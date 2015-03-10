@@ -25,7 +25,8 @@
 {
     'name': 'Spanish CNAE 2009',
     'version': '1.0',
-    'author': 'Jordi Llinares López - jorgellinareslopez@gmail.com',
+    'author': 'Jordi Llinares López - bigandopen@bigandopen.com',
+    'website': 'http://www.bigandopen.com',
     'category': 'Customer Relationship Management',
     'summary': 'Spanish CNAE list of economic activities',
     'complexity': 'easy',
@@ -38,12 +39,17 @@ Warning: Although module fields and views are defined both in english and
 spanish, master data of the CNAE list are only in spanish.
 
 Features:
--    Full spanish CNAE hyerarchical records list.
--    View of linked leads/partners to a given CNAE code from within its
-     form view.
--    Added a new tags field in lead/opportunity/partner form view for CNAE
-     codes (several codes may be linked).
--    CNAE codes are written when escalating a crm case to a partner.
+
+    Full spanish CNAE hyerarchical records list.
+
+    View of linked leads/partners to a given CNAE code from within its
+    form view.
+
+    Added a new tags field in lead/opportunity/partner form view for CNAE
+    codes (several codes may be linked).
+
+    CNAE codes are written when escalating a crm case to a partner.
+
 """,
     'website': '',
     'depends': [

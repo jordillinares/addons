@@ -25,7 +25,7 @@
 {
     'name': 'Multiple many2one text field widget',
     'version': '1.0',
-    'author': 'KM Sistemas de información, S.L.',
+    'author': 'Jordi Llinares López - bigandopen@bigandopen.com',
     'category': '',
     'summary': '',
     'complexity': 'easy',
@@ -56,7 +56,7 @@ Please keep on mind that my Qweb/JQuert/JS skills are limited, so widget is NOT
 displayed as I'd like in tree views.
  
 """,
-    'website': 'http://www.kmsistemas.com',
+    'website': 'http://www.bigandopen.com',
     'depends': [
         'web',
     ],

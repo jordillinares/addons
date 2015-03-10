@@ -64,7 +64,7 @@
 			<field name="value" eval="'ir.actions.server,%d'%action_cnae2009_form"/>
 		</record>
 
-		<menuitem id="menu_cnae2009" action="action_cnae2009_tree_view" parent="base.menu_crm_config_lead" sequence="60"/>
+		<menuitem id="menu_cnae2009" action="action_cnae2009_tree_view" parent="base.menu_crm_config_lead" sequence="60" groups="base.group_sale_manager"/>
 
     	
     	

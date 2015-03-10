@@ -25,7 +25,7 @@
 {
     'name': 'Time fields as \'hh:mm:ss\'',
     'version': '1.0',
-    'author': 'KM Sistemas de información, S.L.',
+    'author': 'Jordi Llinares López - bigandopen@bigandopen.com',
     'category': 'Others',
     'description': """
     This module replaces the format of the 'float_time' widget, which is hh:mm,
@@ -33,7 +33,7 @@
     short as a few seconds. This fact is specially relevant when measuring
     cycle times in manufacturing.
     """,
-    'website': 'http://www.kmsistemas.com',
+    'website': 'http://www.bigandopen.com',
     'images': [
     ],
     'depends': [

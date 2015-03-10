@@ -109,10 +109,9 @@ class stock_quant(models.Model):
                         and quant.removal_date < 
                         time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         ):
-                        if ('chatter_model' in context
-                            and context.get('chatter_model', False)
-                            and 'chatter_id' in context
-                            and context.get('chatter_id', False):
+                        if ('chatter_model' in context and \
+                            context.get('chatter_model', False) and 'chatter_id' in context
+                            and context.get('chatter_id', False)
                             ):
                             model = self.env[context['chatter_model']]
                             # maybe our active model class does not inherit

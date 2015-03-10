@@ -25,7 +25,7 @@
 {
     'name': 'MRP Manual consume/production',
     'version': '1.0',
-    'author': 'KM Sistemas de información, S.L.',
+    'author': 'Jordi Llinares López - bigandopen@bigandopen.com',
     'category': '',
     'summary': 'Manual and independent consume/production in manufacturing.',
     'complexity': 'easy',
@@ -55,7 +55,7 @@
     quantity.
 
 """,
-    'website': 'http://www.kmsistemas.com',
+    'website': 'http://www.bigandopen.com',
     'depends': [
         'product',
         'mrp',
