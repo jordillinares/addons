@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved   
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved
 #
 #    This module,
-#    Copyright (C) 2015 KM Sistemas de Información, S.L. - http://www.kmsistemas.com
+#    Copyright (C) 2015 Jordi Llinares López - bigandopen@bigandopen.com
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,11 @@
 ##############################################################################
 
 {
-    'name' : 'MRP Manual consume/production',
-    'version' : '1.0',
-    'author' : 'KM Sistemas de información, S.L.',
-    'category' : '',
-    'summary': 'Manual and independent consume/production moves in manufacturing orders.',
+    'name': 'MRP Manual consume/production',
+    'version': '1.0',
+    'author': 'KM Sistemas de información, S.L.',
+    'category': '',
+    'summary': 'Manual and independent consume/production in manufacturing.',
     'complexity': 'easy',
     'description' : """This module implements some changes on the base 'mrp' module of Odoo:
     
@@ -48,33 +48,31 @@
     When you have consumed/produced all you needed to, you'll 'Close order'. If there are any
     pending moves, a warning is raised (though it lets you close the order). Counterpart of this
     warning is that the page header now uses double height.
-             
+
 -   'Consumed' and 'Produced' fields are not showing cancelled moves anymore.
 
--   Show the real produced quantity of order's product on the order form header, below the ordered
+-   Displays the real produced quantity of order's product on the order form header, below the ordered
     quantity.
-
-             
 
 """,
     'website': 'http://www.kmsistemas.com',
-    'depends' : [
+    'depends': [
         'product',
         'mrp',
         'stock',
         'stock_lot_enh_base',
     ],
-    'conflicts' : [
+    'conflicts': [
     ],
     'data': [
         # Workflows
         'workflow/mrp_workflow.xml',
-        
+
         # Views
         'views/mrp_consume_produce_views.xml',
         'views/mrp_view.xml',
     ],
-    'qweb' : [
+    'qweb': [
     ],
     'demo': [
     ],

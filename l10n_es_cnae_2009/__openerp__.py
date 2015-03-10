@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved   
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved
 #
 #    This module,
-#    Copyright (C) 2015 Jordi Llinares López - jorgellinareslopez@gmail.com
+#    Copyright (C) 2015 Jordi Llinares López - bigandopen@bigandopen.com
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ Features:
 -    Full spanish CNAE hyerarchical records list.
 -    View of linked leads/partners to a given CNAE code from within its
      form view.
--    New tags-like field in lead/opportunity/partner form view for CNAE
+-    Added a new tags field in lead/opportunity/partner form view for CNAE
      codes (several codes may be linked).
 -    CNAE codes are written when escalating a crm case to a partner.
 """,

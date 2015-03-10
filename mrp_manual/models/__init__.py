@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004- 2015 Tiny SPRL (http://tiny.be). All Rights Reserved   
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved
 #
 #    This module,
-#    Copyright (C)  2015 KM Sistemas de Información, S.L. - http://www.kmsistemas.com
+#    Copyright (C) 2015 Jordi Llinares López - bigandopen@bigandopen.com
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as

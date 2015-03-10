@@ -5,7 +5,7 @@
 #    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved
 #
 #    This module,
-#    Copyright (C) 2015 Jordi Llinares López - jorgellinareslopez@gmail.com
+#    Copyright (C) 2015 Jordi Llinares López - bigandopen@bigandopen.com
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -72,8 +72,8 @@ class cnae2009(models.Model):
                                 'crm_lead_cnae_2009_rel', 'cnae2009_id',
                                 'lead_id', string='Leads under this CNAE code')
     partner_ids = fields.Many2many(
-        'res.partner', 'res_partner_cnae_2009_rel', 'cnae2009_id', 'partner_id',
-        string='Partners under this CNAE code')
+        'res.partner', 'res_partner_cnae_2009_rel', 'cnae2009_id',
+        'partner_id', string='Partners under this CNAE code')
 
     @api.multi
     def from_hierarchy_open_form(self):

@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved   
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2012 Tiny SPRL (http://tiny.be). All Rights Reserved
 #
 #    This module,
-#    Copyright (C) 2014 KM Sistemas de Información, S.L. - http://www.kmsistemas.com
+#    Copyright (C) 2015 Jordi Llinares López - bigandopen@bigandopen.com
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,27 +23,28 @@
 ##############################################################################
 
 {
-    'name' : 'Time fields as \'hh:mm:ss\'',
-    'version' : '1.0',
-    'author' : 'KM Sistemas de información, S.L.',
-    'category' : 'Others',
-    'description' : """
-    This module replaces the format of the 'float_time' widget, which is hh:mm, by hh:mm:ss, as there are
-    some industries on which some processes are as short as a few seconds. This fact is specially relevant
-    when measuring cycle times in manufacturing.
+    'name': 'Time fields as \'hh:mm:ss\'',
+    'version': '1.0',
+    'author': 'KM Sistemas de información, S.L.',
+    'category': 'Others',
+    'description': """
+    This module replaces the format of the 'float_time' widget, which is hh:mm,
+    by hh:mm:ss, as there are some industries on which some processes are as
+    short as a few seconds. This fact is specially relevant when measuring
+    cycle times in manufacturing.
     """,
     'website': 'http://www.kmsistemas.com',
-    'images' : [
+    'images': [
     ],
-    'depends' : [
+    'depends': [
         'web',
     ],
-    'conflicts' : [
+    'conflicts': [
     ],
     'data': [
         'views/float_time_hms_views.xml',
     ],
-    'qweb' : [
+    'qweb': [
     ],
     'demo': [
     ],
