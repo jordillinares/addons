@@ -5,13 +5,15 @@ openerp.multi_m2o_text_widget = function(instance){
 
     
     // Form widget
-
 	instance.web.form.MultiReference = instance.web.form.AbstractField.extend(instance.web.form.ReinitializeFieldMixin, {
 
 		template: "MultiReference",
 		
 		render_value: function() {
 	        var self = this;
+	        if (! this.get('value')) {
+	        	$('.oe_ul_multi_reference li').remove();
+	        }
         	if (this.get('value')) {
         		var tuples = this.get('value').split(";");
         		$('.oe_ul_multi_reference li').remove();
@@ -32,7 +34,7 @@ openerp.multi_m2o_text_widget = function(instance){
 		                 });
 	            	});
 	            });
-            }	            
+            }
 	    },
 
 	});

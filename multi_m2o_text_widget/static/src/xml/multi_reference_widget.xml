@@ -2,10 +2,7 @@
 <templates id="template" xml:space="preserve">
 	
  	<t t-name="MultiReference">
-		<t t-if="widget.get('value')">
-			<ul class="oe_ul_multi_reference" style="list-style-type: none;-moz-padding-start: 0; -webkit-padding-start: 0; -khtml-padding-start: 0; -o-padding-start: 0; padding-start: 0;">
-			</ul>
-		</t>
+		<ul class="oe_ul_multi_reference" style="list-style-type: none;-moz-padding-start: 0; -webkit-padding-start: 0; -khtml-padding-start: 0; -o-padding-start: 0; padding-start: 0;"/>
 	</t>
 
 </templates>
