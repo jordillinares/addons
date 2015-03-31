@@ -1,0 +1,119 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* stock_lot_enh_mrp
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-31 08:16+0000\n"
+"PO-Revision-Date: 2015-03-31 08:16+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:93
+#, python-format
+msgid "%s %s of %s have been consumed."
+msgstr "Se han consumido %s %s de %s."
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:137
+#, python-format
+msgid "%s %s of %s have been produced."
+msgstr "Se han producido %s %s de %s."
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:76
+#, python-format
+msgid "%s %s of lot %s of %s have been consumed."
+msgstr "Se han consumido %s %s del lote %s de %s."
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:122
+#, python-format
+msgid "%s %s of lot %s of %s have been produced."
+msgstr "Se han producido %s %s del lote %s de %s."
+
+#. module: stock_lot_enh_mrp
+#: view:mrp.production:stock_lot_enh_mrp.mrp_production_form_view
+msgid "Check Availability"
+msgstr "Comprobar disponibilidad"
+
+#. module: stock_lot_enh_mrp
+#: model:ir.actions.act_window,name:stock_lot_enh_mrp.stock_production_lot_down_tree_action
+msgid "Downstream traceability"
+msgstr "Trazabilidad hacia abajo"
+
+#. module: stock_lot_enh_mrp
+#: view:stock.production.lot:stock_lot_enh_mrp.view_production_lot_form_lot_enh_mrp
+msgid "Get downstream traceability of this lot (i.e, its component lots)."
+msgstr "Mostrar trazabilidad hacia abajo (hacia los componentes) de este lote."
+
+#. module: stock_lot_enh_mrp
+#: view:stock.production.lot:stock_lot_enh_mrp.view_production_lot_form_lot_enh_mrp
+msgid "Get upstream traceability of this lot (i.e, manufactured lots for which this one is a component)."
+msgstr "Mostrar trazabilidad hacia arriba (hacia los productos elaborados) de este lote."
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:344
+#, python-format
+msgid "Lot"
+msgstr "Lote"
+
+#. module: stock_lot_enh_mrp
+#: model:ir.model,name:stock_lot_enh_mrp.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Lote/Nº de serie"
+
+#. module: stock_lot_enh_mrp
+#: view:stock.production.lot:stock_lot_enh_mrp.stock_production_lot_down_tree
+msgid "Lots trace-down"
+msgstr "Trazabilidad hacia abajo"
+
+#. module: stock_lot_enh_mrp
+#: view:stock.production.lot:stock_lot_enh_mrp.stock_production_lot_up_tree
+msgid "Lots trace-up"
+msgstr "Trazabilidad hacia arriba"
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:146
+#, python-format
+msgid "Manufactured product"
+msgstr "Producto elaborado"
+
+#. module: stock_lot_enh_mrp
+#: code:addons/stock_lot_enh_mrp/models/stock.py:102
+#, python-format
+msgid "Raw material consume"
+msgstr "Consumo de materia prima"
+
+#. module: stock_lot_enh_mrp
+#: model:ir.model,name:stock_lot_enh_mrp.model_traceability_functions
+msgid "SQL functions for upstream and downstream lot traceability"
+msgstr "SQL functions for upstream and downstream lot traceability"
+
+#. module: stock_lot_enh_mrp
+#: model:ir.model,name:stock_lot_enh_mrp.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: stock_lot_enh_mrp
+#: view:stock.production.lot:stock_lot_enh_mrp.view_production_lot_form_lot_enh_mrp
+msgid "Trace down"
+msgstr "Traz. abajo"
+
+#. module: stock_lot_enh_mrp
+#: view:stock.production.lot:stock_lot_enh_mrp.view_production_lot_form_lot_enh_mrp
+msgid "Trace up"
+msgstr "Traz. arriba"
+
+#. module: stock_lot_enh_mrp
+#: model:ir.actions.act_window,name:stock_lot_enh_mrp.stock_production_lot_up_tree_action
+msgid "Upstream traceability"
+msgstr "Trazabilidad hacia arriba"
+

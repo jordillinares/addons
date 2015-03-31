@@ -27,7 +27,7 @@
     'version': '1.0',
     'author': 'Jordi Llinares López - bigandopen@bigandopen.com',
     'category': '',
-    'summary': 'Additional enhancements to lot mananagement in manufacturing.',
+    'summary': 'Additional enhancements to lot management in manufacturing.',
     'complexity': 'easy',
     'description': """
 MRP lot management enhancements:

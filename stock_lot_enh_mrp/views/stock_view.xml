@@ -11,8 +11,8 @@
                 <tree string="Lots trace-up">
                     <field name="name"/>
                     <field name="product_id"/>
-                    <!-- <field name="origin" widget="multi_reference"/>
-                    <field name="destination" widget="multi_reference"/> -->
+                    <field name="origin" widget="multi_reference"/>
+                    <field name="destination" widget="multi_reference"/>
                 </tree>
             </field>
         </record>
@@ -34,8 +34,8 @@
                 <tree string="Lots trace-down">
                     <field name="name"/>
                     <field name="product_id"/>
-                    <!-- <field name="origin" widget="multi_reference"/>
-                    <field name="destination" widget="multi_reference"/> -->
+                    <field name="origin" widget="multi_reference"/>
+                    <field name="destination" widget="multi_reference"/>
                 </tree>
             </field>
         </record>
@@ -65,7 +65,8 @@
         <!-- Open a lot's form view when double clicking on its row in a hierarchical tree view -->
 		<!-- A window action can't open a form view of the lot on which we have double-clicked
 		Instead, we link the tree_but_open qualifier to a server action that returns the form view of the selected row -->
-		<record id="action_lot_form" model="ir.actions.server">
+		<!-- commented because it iterferes with JS in 'multi_m2o_text_widget' module -->
+		<!-- <record id="action_lot_form" model="ir.actions.server">
 		    <field name="name">Show lot form</field>
 		    <field name="model_id" ref="model_stock_production_lot"/>
 		    <field name="state">code</field>
@@ -76,7 +77,7 @@
 			<field name="model">stock.production.lot</field>
 			<field name="name">Show lot form</field>
 			<field name="value" eval="'ir.actions.server,%d'%action_lot_form"/>
-		</record>
+		</record> -->
     	
     </data>
 </openerp>

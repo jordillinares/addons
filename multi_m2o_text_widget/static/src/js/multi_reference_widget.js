@@ -4,7 +4,7 @@ openerp.multi_m2o_text_widget = function(instance){
     var _t = instance.web._t;
 
     
-    // Form widget
+    // Form view widget
 	instance.web.form.MultiReference = instance.web.form.AbstractField.extend(instance.web.form.ReinitializeFieldMixin, {
 
 		template: "MultiReference",
@@ -43,7 +43,8 @@ openerp.multi_m2o_text_widget = function(instance){
 	
 	
 	
-	// Tree widget (column)
+	
+	// List view widget (column)
 	instance.multi_m2o_text_widget.MultiReferenceList = instance.web.list.Column.extend({
 
 		_format: function (row_data, options) {
@@ -53,7 +54,7 @@ openerp.multi_m2o_text_widget = function(instance){
 	        	var tuples = value.split(";");
 	        	var wholelink = "";
         		_.each(tuples, function(tuple) {
-        			wholelink += _.template('<a data-many2one-clickable-model="<%-model%>" data-many2one-clickable-id="<%-resid%>">#</a> ', {
+        			wholelink += _.template('<a class="oe_form_uri" data-many2one-clickable-model="<%-model%>" data-many2one-clickable-id="<%-resid%>">#</a> ', {
         				model: tuple.split(",")[0], 
         				resid: parseInt(tuple.split(",")[1]),
         			});
@@ -65,6 +66,8 @@ openerp.multi_m2o_text_widget = function(instance){
 		
 	});
 	
+	instance.web.list.columns.add('field.multi_reference', 'instance.multi_m2o_text_widget.MultiReferenceList');
+
 	instance.web.ListView.List.include({
 
 		render: function() {
@@ -111,6 +114,51 @@ openerp.multi_m2o_text_widget = function(instance){
 		
 	});
 	
-	instance.web.list.columns.add('field.multi_reference', 'instance.multi_m2o_text_widget.MultiReferenceList');
+
+	
+	
+	// Tree view widget
+	instance.web.TreeView.include({
+		
+		getdata: function (id, children_ids) {
+	        var self = this;
+	        self.dataset.read_ids(children_ids, this.fields_list()).done(function(records) {
+	            _(records).each(function (record) {
+	                self.records[record.id] = record;
+	            });
+	            var $curr_node = self.$el.find('#treerow_' + id);
+	            var children_rows = QWeb.render('MultiReferenceTreeView.rows', {
+	                'records': records,
+	                'children_field': self.children_field,
+	                'fields_view': self.fields_view.arch.children,
+	                'fields': self.fields,
+	                'level': $curr_node.data('level') || 0,
+	                'render': instance.web.format_value,
+	                'color_for': self.color_for,
+	                'row_parent_id': id
+	            });
+	            if ($curr_node.length) {
+	                $curr_node.addClass('oe_open');
+	                $curr_node.after(children_rows);
+	            } else {
+	                self.$el.find('tbody').html(children_rows);   
+	            }
+	            
+	            self.$("a[data-index]").each(function() {
+	                var elem = $(this);
+	                var tuple = elem.attr('data-index');
+	                var model_name = tuple.split(",")[0];
+	            	var model_obj = new instance.web.Model(model_name);
+	            	var res_id = parseInt(tuple.split(",")[1]);
+					model_obj.call("name_get",[res_id]).then(function(data) {
+						var name = data[0][1];
+						elem.text(name);
+						// I wasn't able to make 'delegate' or 'click' functions work here. This is very ugly but it works.
+						elem.attr('href', instance.session.prefix + '/web#id=' + res_id + '&view_type=form&model=' + model_name);
+					});
+				});
+            });
+	    },
+	});
 	
 };
