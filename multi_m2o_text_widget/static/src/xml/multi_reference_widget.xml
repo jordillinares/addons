@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
 	
- 	<t t-name="MultiReference">
-		<ul class="oe_ul_multi_reference" style="list-style-type: none;-moz-padding-start: 0; -webkit-padding-start: 0; -khtml-padding-start: 0; -o-padding-start: 0; padding-start: 0;"/>
-	</t>
-	
-	
 	<tr t-name="MultiReferenceTreeView.rows"
 	        t-foreach="records" t-as="record"
 	        t-att-id="'treerow_' + record.id"

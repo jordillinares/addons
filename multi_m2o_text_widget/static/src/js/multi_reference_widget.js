@@ -6,37 +6,37 @@ openerp.multi_m2o_text_widget = function(instance){
     
     // Form view widget
 	instance.web.form.MultiReference = instance.web.form.AbstractField.extend(instance.web.form.ReinitializeFieldMixin, {
-
-		template: "MultiReference",
 		
 		render_value: function() {
 	        var self = this;
-	        if (! this.get('value')) {
-	        	$('.oe_ul_multi_reference li').remove();
-	        }
-        	if (this.get('value')) {
-        		var tuples = this.get('value').split(";");
-        		$('.oe_ul_multi_reference li').remove();
+	        self.$('a').remove();
+	    	if (this.get('value')) {
+	    		var tuples = this.get('value').split(";");
+	    		var wholelink = "";
 	            _.each(tuples, function(tuple) {
 	            	var model_name = tuple.split(",")[0];
 	            	var model_obj = new instance.web.Model(model_name);
 	            	var res_id = parseInt(tuple.split(",")[1]);
-	            	var dataset = new instance.web.DataSetStatic(this, model_name, self.build_context());
-	            	self.alive(dataset.name_get([res_id])).done(function(data) {
-         	       		var name = data[0][1];
-         	       		var $li = $(".oe_ul_multi_reference").append('<li class="oe_form_field oe_form_field_many2one" style="display: inline;"><a href="#" class="oe_form_uri">' + name + '</a></li>');
-         	       		$li.find('a').filter(function(index) { return $(this).text() === name; }).click(function () {
-		                    var context = self.build_context().eval();
-		                    model_obj.call('get_formview_action', [res_id, context]).then(function(action){
-		                        self.do_action(action);
-		                    });
-		                    return false;
-		                 });
-	            	});
-	            });
-            }
+	     	       	model_obj.call("name_get",[res_id]).then(function(result) {
+					   	var name = result[0][1];
+					   	var $link = self.$el.append(
+				   			$('<a/>', {
+				   				'class': '',
+				   				'href' : '#',
+				   				html: name,
+				   				click: (function () {
+					                    var context = self.build_context().eval();
+					                    model_obj.call('get_formview_action', [res_id, context]).then(function(action){
+					                        self.do_action(action);
+					                    });
+					                    return false;
+					                 }),
+				   				
+				   			}));
+	     	       	});  
+	            });	
+	        }
 	    },
-
 	});
 	
 	instance.web.form.widgets.add('multi_reference', 'instance.web.form.MultiReference');
@@ -99,12 +99,8 @@ openerp.multi_m2o_text_widget = function(instance){
 						var model_obj = new instance.web.Model(model_name);
 						var res_id = parseInt(tuple.split(",")[1]);
 						model_obj.call("name_get",[res_id]).then(function(result) {
-							account_names = {};
-							_.each(result, function(el) {
-								account_names[el[0]] = el[1];
-							});
-							var link = account_names[res_id];
-							$('a[data-many2one-clickable-model="' + model_name + '"][data-many2one-clickable-id="' + res_id + '"]').text(link);
+							var name = result[0][1];
+							$('a[data-many2one-clickable-model="' + model_name + '"][data-many2one-clickable-id="' + res_id + '"]').text(name);
 						});     
 					});
 				}

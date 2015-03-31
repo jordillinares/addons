@@ -117,3 +117,12 @@ msgstr "Traz. arriba"
 msgid "Upstream traceability"
 msgstr "Trazabilidad hacia arriba"
 
+#. module: mrp
+#: model:ir.model,name:mrp.model_mrp_production
+#: view:mrp.config.settings:mrp.view_mrp_config
+#: view:mrp.production:mrp.mrp_production_form_view
+#: field:mrp.production.workcenter.line,production_id:0
+#: field:procurement.order,production_id:0
+msgid "Manufacturing Order"
+msgstr "Orden de producción"
+
