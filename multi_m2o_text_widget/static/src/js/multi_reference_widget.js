@@ -21,9 +21,9 @@ openerp.multi_m2o_text_widget = function(instance){
 					   	var name = result[0][1];
 					   	var $link = self.$el.append(
 				   			$('<a/>', {
-				   				'class': '',
+				   				'class': 'oe_form_uri',
 				   				'href' : '#',
-				   				html: name,
+				   				html: name + ' ', //Grr!
 				   				click: (function () {
 					                    var context = self.build_context().eval();
 					                    model_obj.call('get_formview_action', [res_id, context]).then(function(action){
