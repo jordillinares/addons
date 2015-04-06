@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+    
+    	<record forcecreate="True" id="decimal_costing" model="decimal.precision">
+            <field name="name">Product costing</field>
+            <field name="digits">5</field>
+        </record>
+    	
+    </data>
+</openerp>
