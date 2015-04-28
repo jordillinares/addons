@@ -68,6 +68,7 @@ the origin MO, the assignation date and responsible person.
 
         # Views
         'views/product_view.xml',
+        'views/mrp_view.xml',
     ],
     'qweb': [
     ],

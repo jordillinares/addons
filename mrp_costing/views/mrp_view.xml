@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- mrp.bom tree view 1 -->
+        <record id="mrp_bom_tree_view" model="ir.ui.view">
+            <field name="name">mrp.bom.tree.mrp_costing</field>
+            <field name="model">mrp.bom</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="product_uom" position="after">
+                    <field name="cost" invisible="1"/>
+                </field>
+            </field>
+        </record>
+        <!-- mrp.bom tree view 2 -->
+        <!--<record id="mrp_bom_component_tree_view" model="ir.ui.view">-->
+            <!--<field name="name">mrp.bom.component.tree.mrp_costing</field>-->
+            <!--<field name="model">mrp.bom</field>-->
+            <!--<field name="type">tree</field>-->
+            <!--<field name="inherit_id" ref="mrp.mrp_bom_component_tree_view"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="product_uom" position="after">-->
+                    <!--<field name="cost" invisible="1"/>-->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+
+
+
+
+        <!-- Workcenter cost concept form view -->
+    	<record model="ir.ui.view" id="mrp_workcenter_cost_concept_form_view">
+			<field name="name">mrp.workcenter.cost.concept.form</field>
+			<field name="model">mrp.workcenter.cost.concept</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Per-hour workcenter cost concept definition">
+					<field name="name" select="1"/>
+				</form>
+			</field>
+		</record>
+
+		<!-- Workcenter cost concept tree view -->
+		<record model="ir.ui.view" id="mrp_workcenter_cost_concept_tree_view">
+			<field name="name">mrp.workcenter.cost.concept.tree</field>
+            <field name="model">mrp.workcenter.cost.concept</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+            	<tree string="Per-hour workcenter cost concept definitions">
+                	<field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Workcenter cost concept tree view action -->
+        <record model="ir.actions.act_window" id="action_mrp_workcenter_cost_concept_tree_view">
+			<field name="name">Workcenter cost concepts</field>
+    		<field name="type">ir.actions.act_window</field>
+        	<field name="res_model">mrp.workcenter.cost.concept</field>
+        	<field name="view_type">form</field>
+        	<field name="view_mode">tree,form</field>
+        	<field name="view_id" ref="mrp_workcenter_cost_concept_tree_view"/>
+    	</record>
+
+    	<!-- Workcenter cost concept tree view action menuitem -->
+    	<menuitem id="mrp_workcenter_cost_concept_tree_menu" name="Workcenter cost concepts" parent="mrp.menu_mrp_configuration" sequence= "70" action="action_mrp_workcenter_cost_concept_tree_view"/>
+
+
+
+
+        <!-- mrp.workcenter.product.cost.item form view -->
+        <record model="ir.ui.view" id="mrp_workcenter_product_cost_item_form_view">
+			<field name="name">mrp.workcenter.product.cost.item.form</field>
+			<field name="model">mrp.workcenter.product.cost.item</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Cost per hour detail">
+					<field name="name"/>
+					<field name="cost"/>
+				</form>
+			</field>
+		</record>
+        <!-- mrp.workcenter.product.cost.item tree view -->
+        <record model="ir.ui.view" id="mrp_workcenter_product_cost_item_tree_view">
+			<field name="name">mrp.workcenter.product.cost.item.tree</field>
+            <field name="model">mrp.workcenter.product.cost.item</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+            	<tree string="Cost per hour detail" create="true" editable="bottom">
+                	<field name="name"/>
+                	<field name="cost"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <!-- mrp.routing.workcenter tree view -->
+        <record id="mrp_routing_workcenter_tree_view" model="ir.ui.view">
+            <field name="name">mrp.routing.workcenter.tree.mrp_costing</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
+            <field name="arch" type="xml">
+            	<field name="cycle_nbr" position="replace">
+            		<field name="cycle_nbr" invisible="1"/>
+            	</field>
+            	<field name="hour_nbr" position="replace">
+            		<field name="hour_nbr" invisible="1"/>
+            	</field>
+            </field>
+        </record>
+		<!-- mrp.routing.workcenter form view -->
+        <record id="mrp_routing_workcenter_form_view" model="ir.ui.view">
+            <field name="name">mrp.routing.workcenter.form.mrp_costing</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
+            <field name="arch" type="xml">
+                <field name="cycle_nbr" position="replace">
+            		<field name="cycle_nbr" invisible="1"/>
+            	</field>
+            	<field name="hour_nbr" position="replace">
+            		<field name="hour_nbr" invisible="1"/>
+            	</field>
+            </field>
+        </record>
+
+
+
+
+        <!-- mrp.workcenter form view -->
+        <record id="mrp_workcenter_view" model="ir.ui.view">
+            <field name="name">mrp.workcenter.form.mrp_costing</field>
+            <field name="model">mrp.workcenter</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='General Information']" position="before">
+                    <page string="Per-product efficiency and cost">
+                        <group>
+                            <p class="oe_grey" colspan="4">
+                                Here you can define, on a per-product basis, how this workcenter
+                                contributes to the manufacturing cost of each product in which
+                                manufacturing it intervenes.
+                            </p>
+                            <field name="product_cost_ids" nolabel="1" widget="one2many_list" colspan="4">
+                                <form string="Per-product cost">
+                                    <sheet>
+                                        <group>
+                                            <field name="product_id"/>
+                                            <field name="capacity_per_cycle"/>
+                                            <field name="product_efficiency"/>
+                                            <field name="time_cycle" widget="float_time"/>
+                                            <field name="cost_uom"/>
+                                            <field name="cost_cycle"/>
+                                            <field name="cost_hour"/>
+                                        </group>
+                                        <field name="line_ids" nolabel="1" widget="one2many_list" editable="bottom"/>
+                                    </sheet>
+                                </form>
+                                <tree string="Per-product cost">
+                                    <field name="product_id"/>
+                                    <field name="capacity_per_cycle"/>
+                                    <field name="product_efficiency"/>
+                                    <field name="time_cycle" widget="float_time"/>
+                                    <field name="cost_uom"/>
+                                    <field name="cost_cycle"/>
+                                    <field name="cost_hour"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//page[@string='General Information']" position="attributes">
+                    <attribute name="attrs">{'invisible': True}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
