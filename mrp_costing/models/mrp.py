@@ -70,9 +70,7 @@ class mrp_bom(models.Model):
 
     cost = fields.Float(string="Cost", required=False,
             digits_compute = dp.get_precision('Product costing'),
-            help=_("Components cost for this product. It is calculated from "
-                   "the product's bill of materials with the lowest sequence."
-                   ),
+            help=_("Components cost for this BoM."),
             compute=_get_cost)
 
 

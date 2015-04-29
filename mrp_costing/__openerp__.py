@@ -70,7 +70,8 @@ the origin MO, the assignation date and responsible person.
         'views/product_view.xml',
         'views/mrp_view.xml',
     ],
-    'qweb': [
+    'conflicts': [
+        'product_extended',
     ],
     'demo': [
     ],

@@ -27,12 +27,12 @@ from openerp.addons.decimal_precision import decimal_precision as dp
 from operator import itemgetter
 
 
-class product_product_cost_concept(models.Model):
+class product_template_cost_concept(models.Model):
     """
     Class for a set of predefined product cost concepts.
     """
 
-    _name = 'product.product.cost.concept'
+    _name = 'product.template.cost.concept'
     _description = 'Product cost concept'
 
     name = fields.Char('Description', required=True)
@@ -55,15 +55,15 @@ class product_category_cost_concept(models.Model):
     name = fields.Char('Description', required=True)
 
 
-class product_product_cost_item(models.Model):
+class product_template_cost_item(models.Model):
     """
     Implementation of concept + cost value for a product.
     """
 
-    _name = 'product.product.cost.item'
+    _name = 'product.template.cost.item'
     _description = 'Product cost item'
 
-    product_id = fields.Many2one('product.product', string='Product',
+    product_tmpl_id = fields.Many2one('product.template', string='Product',
                                       required=True, ondelete='cascade')
     name = fields.Char('Description', required=True)
     cost = fields.Float('Cost', digits=dp.get_precision('Product costing'),
@@ -76,7 +76,7 @@ class product_category(models.Model):
 
     @api.model
     def _default_cost_concepts(self):
-        cost_concept_obj = self.env['product.product.cost.concept']
+        cost_concept_obj = self.env['product.template.cost.concept']
         all_concept_names = cost_concept_obj.search_read([], ['name'])
         for x in all_concept_names:
             self.cost_concept_ids.append((0, 0, {'name': x['name'],
@@ -88,12 +88,12 @@ class product_category(models.Model):
                                        default=_default_cost_concepts)
 
 
-class product_product(models.Model):
+class product_template(models.Model):
 
-    _inherit = 'product.product'
+    _inherit = 'product.template'
 
-    concept_cost_ids = fields.One2many('product.product.cost.item',
-                                       'product_id',
+    concept_cost_ids = fields.One2many('product.template.cost.item',
+                                       'product_tmpl_id',
                                        'Other concepts detailed cost')
     other_concepts_cost = fields.Float('Additional cost',
                                        digits=dp.get_precision('Product '
@@ -163,13 +163,13 @@ class product_product(models.Model):
     @api.one
     def default_cost_concepts(self):
         category_cost_concept_obj = self.env['product.category.cost.concept']
-        product_cost_concept_obj = self.env['product.product.cost.item']
+        product_cost_concept_obj = self.env['product.template.cost.item']
         all_concept_names = category_cost_concept_obj.search_read([], ['name'])
         self.concept_cost_ids = []
         concept_costs = []
         for x in all_concept_names:
             product_cost_concept_obj.create({'name': x['name'],
-                                             'product_id': self.id,
+                                             'product_tmpl_id': self.id,
                                              })
 
     # Verificado: aquí no ponemos depends. Si ponemos depends + stored, la única forma
@@ -233,12 +233,12 @@ class product_product(models.Model):
                 record.material_cost = material_cost
                 record.production_cost = production_cost
                 record.other_concepts_cost = oth_conc_cost
-                record.computed_cost = record.material_cost + record.production_cost + \
-                    record.other_concepts_cost
+                record.computed_cost = record.material_cost + \
+                    record.production_cost +  record.other_concepts_cost
 
                 if record.cost_method == 'auto_mpa' and \
                     record.standard_price != record.computed_cost:
-                        res_id = 'product.product,' + str(record.id)
+                        res_id = 'product.template,' + str(record.id)
                         self.env.cr.execute("""
                             UPDATE
                                 ir_property
@@ -250,9 +250,17 @@ class product_product(models.Model):
                                 name = 'standard_price';
                         """ % (record.computed_cost, res_id))
 
-    @api.one
-    @api.onchange('cost_method')
+    @api.onchange('cost_method','computed_cost')
     def _onchange_cost_method(self):
         if self.cost_method == 'auto_mpa' and \
             self.standard_price != self.computed_cost:
                 self.standard_price = self.computed_cost
+
+    @api.one
+    def write(self, vals):
+        if 'cost_method' in vals and vals['cost_method'] == 'auto_mpa':
+            vals['standard_price'] = self.computed_cost
+        res = super(product_template, self).write(vals)
+        return res
+
+

@@ -2,10 +2,10 @@
 <openerp>
     <data>
     	
-    	<!-- Product product cost concept form view -->
-    	<record model="ir.ui.view" id="product_product_cost_concept_form_view">
-			<field name="name">product.product.cost.concept.form</field>
-			<field name="model">product.product.cost.concept</field>
+    	<!-- Product template cost concept form view -->
+    	<record model="ir.ui.view" id="product_template_cost_concept_form_view">
+			<field name="name">product.template.cost.concept.form</field>
+			<field name="model">product.template.cost.concept</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Product cost concept">
@@ -14,10 +14,10 @@
 			</field>
 		</record>
 		
-		<!-- Product product cost concept tree view -->
-		<record model="ir.ui.view" id="product_product_cost_concept_tree_view">
-			<field name="name">product.product.cost.concept.tree</field>
-            <field name="model">product.product.cost.concept</field>
+		<!-- Product template cost concept tree view -->
+		<record model="ir.ui.view" id="product_template_cost_concept_tree_view">
+			<field name="name">product.template.cost.concept.tree</field>
+            <field name="model">product.template.cost.concept</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
             	<tree string="Product cost concepts">
@@ -27,17 +27,17 @@
         </record>
         
         <!-- Product cost concept tree view action -->
-        <record model="ir.actions.act_window" id="action_product_product_cost_concept_tree_view">
+        <record model="ir.actions.act_window" id="action_product_template_cost_concept_tree_view">
 			<field name="name">Product cost concepts</field>
     		<field name="type">ir.actions.act_window</field>
-        	<field name="res_model">product.product.cost.concept</field>
+        	<field name="res_model">product.template.cost.concept</field>
         	<field name="view_type">form</field>
         	<field name="view_mode">tree,form</field>
-        	<field name="view_id" ref="product_product_cost_concept_tree_view"/>
+        	<field name="view_id" ref="product_template_cost_concept_tree_view"/>
     	</record>
     	
     	<!-- Product cost concept tree view action menuitem -->
-    	<menuitem id="product_product_cost_concept_tree_menu" name="Additional product cost concepts" parent="product.prod_config_main" sequence= "35" action="action_product_product_cost_concept_tree_view"/>
+    	<menuitem id="product_template_cost_concept_tree_menu" name="Additional product cost concepts" parent="product.prod_config_main" sequence= "35" action="action_product_template_cost_concept_tree_view"/>
 
 
 
@@ -89,9 +89,9 @@
     	
     	
     	<!-- product cost item form view -->
-		<record model="ir.ui.view" id="product_product_cost_item_form_view">
-			<field name="name">product.product.cost.item.form</field>
-			<field name="model">product.product.cost.item</field>
+		<record model="ir.ui.view" id="product_template_cost_item_form_view">
+			<field name="name">product.template.cost.item.form</field>
+			<field name="model">product.template.cost.item</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Product - Additional cost item">
@@ -102,9 +102,9 @@
 		</record>
 		
 		<!-- product cost item tree view -->
-		<record model="ir.ui.view" id="product_product_cost_item_tree_view">
-			<field name="name">product.product.cost.item.tree</field>
-            <field name="model">product.product.cost.item</field>
+		<record model="ir.ui.view" id="product_template_cost_item_tree_view">
+			<field name="name">product.template.cost.item.tree</field>
+            <field name="model">product.template.cost.item</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
             	<tree string="Additional costs">
@@ -113,24 +113,25 @@
                 </tree>
             </field>
         </record>
-    	
-    	
-    	
-    	
-    	<!-- product form view -->
-    	<record id="product_product_form_view" model="ir.ui.view">
-            <field name="name">product_product_form_view_mrp_costing</field>
-            <field name="model">product.product</field>
+
+
+
+
+        <!-- product template form view -->
+    	<record id="product_template_form_view" model="ir.ui.view">
+            <field name="name">product_template_form_view_mrp_costing</field>
+            <field name="model">product.template</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <!--<field name="inherit_id" ref="product.product_normal_form_view"/>-->
+            <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="priority" eval="17"/>
             <field name="arch" type="xml">
-            
-            	<!-- hide some fields defined on stock_account -->
-            	<!--<field name="standard_price" position="replace"/>-->
-            	<!--<field name="cost_method" position="replace"/>-->
-            	<!--<xpath expr="//label[@string='Cost Price']" position="replace"/>-->
-       			<!--<xpath expr="//separator[@string='Inventory Valuation']/.." position="replace"/>-->
+
+                <!-- hide some fields defined on stock_account -->
+            	<field name="standard_price" position="replace"/>
+            	<field name="cost_method" position="replace"/>
+            	<xpath expr="//label[@string='Cost Price']" position="replace"/>
+       			<xpath expr="//separator[@string='Inventory Valuation']/.." position="replace"/>
             	
             	<xpath expr="//notebook/page[last()]" position="after">
             		<page string="Costing">
@@ -179,31 +180,62 @@
 
             </field>
         </record>
-        
-        <!-- <record id="product_product_tree_view" model="ir.ui.view">
-            <field name="name">product.product.product.tree.mrp_costing</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_tree_view"/>
-			<field name="priority" eval="17"/>
-            <field name="arch" type="xml">
-            	<field name="uom_id" position="after">
-            		<field name="material_cost" invisible="1"/>
-            		<field name="standard_price"/>
-            	</field>
-            </field>
-        </record> -->
 
-		<record id="product_product_kanban_view" model="ir.ui.view">
-            <field name="name">Product.product.product.kanban.mrp_costing</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_kanban_view"/>
+        <!-- We need to inherit this view to correctly display
+        standard_price field when it depends on computed_cost -->
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.product.tree.mrp.costing</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
             <field name="arch" type="xml">
-            	<field name="name" position="after">
-	            	<field name="material_cost" invisible="1"/>
-	            	<field name="computed_cost" invisible="1"/>
-            	</field>
+                <field name="uom_id" position="after">
+                    <field name="material_cost" invisible="1"/>
+                    <field name="production_cost" invisible="1"/>
+                    <field name="other_concepts_cost" invisible="1"/>
+                    <field name="computed_cost" invisible="1"/>
+                </field>
             </field>
         </record>
+
+        <record id="product_template_kanban_view" model="ir.ui.view">
+            <field name="name">Product.template.product.kanban.mrp.costing</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_kanban_view"/>
+            <field name="arch" type="xml">
+                <field name="product_variant_ids" position="after">
+                    <field name="material_cost" invisible="1"/>
+                    <field name="production_cost" invisible="1"/>
+                    <field name="other_concepts_cost" invisible="1"/>
+                    <field name="computed_cost" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+
+        <!--<record id="product_product_tree_view" model="ir.ui.view">-->
+            <!--<field name="name">product.product.tree.mrp_costing</field>-->
+            <!--<field name="model">product.product</field>-->
+            <!--<field name="inherit_id" ref="product.product_tree_view"/>-->
+			<!--<field name="priority" eval="17"/>-->
+            <!--<field name="arch" type="xml">-->
+            	<!--<field name="uom_id" position="after">-->
+            		<!--<field name="material_cost" invisible="1"/>-->
+            		<!--<field name="computed_cost" invisible="1"/>-->
+            	<!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+
+		<!--<record id="product_product_kanban_view" model="ir.ui.view">-->
+            <!--<field name="name">Product.product.product.kanban.mrp_costing</field>-->
+            <!--<field name="model">product.product</field>-->
+            <!--<field name="inherit_id" ref="product.product_kanban_view"/>-->
+            <!--<field name="arch" type="xml">-->
+            	<!--<field name="name" position="after">-->
+	            	<!--<field name="material_cost" invisible="1"/>-->
+	            	<!--<field name="computed_cost" invisible="1"/>-->
+            	<!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
     	
     	
     	
