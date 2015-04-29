@@ -109,7 +109,7 @@ class product_template(models.Model):
                                  "the lowest sequence number.")
     production_cost = fields.Float('Production cost',
                                    digits=dp.get_precision('Product costing'),
-#                                    compute='_compute_cost', store=True,
+                                   compute='_compute_cost',
                                    help="Production cost. It is calculated "
                                    "from the routing of the product's BoM "
                                    "with  the lowest sequence number. Each "
@@ -222,7 +222,7 @@ class product_template(models.Model):
                         for workcenter_line in bom.routing_id.workcenter_lines:
                             wc_cost = 0.0
                             for workcenter_product_cost in workcenter_line.workcenter_id.product_cost_ids:
-                                if workcenter_product_cost.product_id.id == record.id:
+                                if workcenter_product_cost.product_id.product_tmpl_id.id == record.id:
                                     wc_cost += workcenter_product_cost.cost_uom
                             production_cost += wc_cost
 

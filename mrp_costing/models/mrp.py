@@ -39,9 +39,9 @@ class mrp_bom(models.Model):
             cost = 0.0
             default_uom = record.product_id.uom_id.id
             # cantidad en la UdM del producto (default_uom)
-            qty = product_uom_obj._compute_qty(record.product_uom.id,
-                                               record.product_qty,
-                                               default_uom)
+            # qty = product_uom_obj._compute_qty(record.product_uom.id,
+            #                                    record.product_qty,
+            #                                    default_uom)
             for bom_line in record.bom_line_ids:
                 # Coste
                 default_uom = bom_line.product_id.uom_id.id
@@ -52,12 +52,12 @@ class mrp_bom(models.Model):
                 cost += qty * bom_line.product_id.standard_price
             record.cost = cost
 
-            # Para las LdM que sean cabecera, ir al producto y escribir el coste estándar.
             # Otros costes
             other_costs = 0.0
             for other_cost in record.product_id.other_cost_ids:
                 other_costs += other_cost.cost
-            std_cost = record.product_id.material_cost + record.product_id.production_cost + other_costs
+            std_cost = record.product_id.material_cost + \
+                       record.product_id.production_cost + other_costs
             # TODO: Añadir un botón de recalcular
             self.env.cr.execute("""
                 UPDATE
@@ -81,7 +81,6 @@ class mrp_workcenter_cost_concept(models.Model):
 
     _name = 'mrp.workcenter.cost.concept'
     _description = 'Per-hour workcenter cost concept definition'
-    #_description = 'Conceptos de coste/hora de máquina'
 
     name = fields.Char(string="Description", required=True)
 
@@ -125,40 +124,38 @@ class mrp_workcenter_product_cost(models.Model):
                                     string="Workcenter", required=True)
     # TODO: Filtro para que sólo se muestren productos que usen esta máquina.
     product_id = fields.Many2one(comodel_name="product.product",
-                                 string="Product", required=True)
+            string="Product", required=True)
     capacity_per_cycle = fields.Float(string="Capacity/cycle", required=True,
-                                      help = "Quantity of production product (in product's UoM) "
-                                             "that the workcenter contributes to produce in a cycle.",
-                                      # Definimos como precisión decimal la mínima necesaria para
-                                      # almacenar un segundo, que equivale a 0.000277778 horas.
-                                      # Por tanto, (4,9)
-                                      digits = (4, 9), default=1.0)
+            help="Quantity of production product (in product's UoM) "
+                 "that the workcenter contributes to produce in a cycle.",
+            # Definimos como precisión decimal la mínima necesaria para
+            # almacenar un segundo, que equivale a 0.000277778 horas.
+            # Por tanto, (4,9)
+            digits = (4, 9), default=1.0)
     time_cycle = fields.Float(string="Cycle time",
-                              help = "Time needed for this machine to complete"
-                                     " one cycle.")
+            help="Time needed for this machine to complete"
+                 " one cycle.")
     product_efficiency = fields.Float(string="Efficiency factor",
-                                      help="A factor of 0.9 means a loss of 10% during the production "
-                                           "process.",
-                                      required=True, default=1.0)
-    # TODO: 'cost_hour' habrá de ser calculado en función de los items y las cantidades
+            help="A factor of 0.9 means a loss of 10% during the production "
+                 "process.",
+            required=True, default=1.0)
     cost_hour = fields.Float(string="Cost per hour",
-                             digits_compute = dp.get_precision('Product costing'),
-                             help = "Calculated cost per hour.",
+                             digits=dp.get_precision('Product costing'),
+                             help="Calculated cost per hour.",
                              compute=_get_cost_all)
     cost_cycle = fields.Float(string="Cost per cycle",
-                              digits_compute = dp.get_precision('Product costing'),
-                              help = "Calculated cost per cycle.",
+                              digits=Pp.get_precision('Product costing'),
+                              help="Calculated cost per cycle.",
                               compute=_get_cost_all)
     cost_uom = fields.Float(string="Cost per UoM",
-                            digits_compute = dp.get_precision('Product costing'),
-                            help = "Calculated cost per product's UoM.",
+                            digits=dp.get_precision('Product costing'),
+                            help="Calculated cost per product's UoM.",
                             compute=_get_cost_all)
     line_ids = fields.One2many(comodel_name="mrp.workcenter.product.cost.item",
                                inverse_name="workcenter_product_cost_id",
                                string="Cost details",
                                default=_default_cost_concepts
                                )
-
 
     @api.one
     @api.constrains('capacity_per_cycle')
@@ -188,7 +185,7 @@ class mrp_workcenter_product_cost_item(models.Model):
                 'workcenter_product_cost_id', False) or False)
     name = fields.Char(string="Description", required=True)
     cost = fields.Float(string="Hourly cost", default=0.0,
-            digits_compute = dp.get_precision('Product costing'),
+            digits=dp.get_precision('Product costing'),
             help="Cost per hour")
 
 
