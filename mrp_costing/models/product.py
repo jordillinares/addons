@@ -212,8 +212,9 @@ class product_template(models.Model):
                             bom_line.product_uom.id,
                             bom_line.product_qty,
                             bom_line.product_id.uom_id.id)
-                        material_cost += bomline_qty * \
-                            bom_line.product_id.standard_price
+                        material_cost += round(bomline_qty * \
+                            bom_line.product_id.standard_price,
+                            dp_obj.precision_get('Product costing'))
                     material_cost = round(material_cost / bom_qty,
                         dp_obj.precision_get('Product costing'))
 
@@ -250,7 +251,7 @@ class product_template(models.Model):
                                 name = 'standard_price';
                         """ % (record.computed_cost, res_id))
 
-    @api.onchange('cost_method','computed_cost')
+    @api.onchange('cost_method','computed_cost','concept_cost_ids.cost')
     def _onchange_cost_method(self):
         if self.cost_method == 'auto_mpa' and \
             self.standard_price != self.computed_cost:
@@ -258,9 +259,13 @@ class product_template(models.Model):
 
     @api.one
     def write(self, vals):
-        if 'cost_method' in vals and vals['cost_method'] == 'auto_mpa':
-            vals['standard_price'] = self.computed_cost
         res = super(product_template, self).write(vals)
+        if 'cost_method' in vals:
+            if vals['cost_method'] == 'auto_mpa':
+                super(product_template, self).write({'standard_price': self.computed_cost})
+        elif 'concept_cost_ids' in vals:
+            if self.cost_method == 'auto_mpa':
+                super(product_template, self).write({'standard_price': self.computed_cost})
         return res
 
 
