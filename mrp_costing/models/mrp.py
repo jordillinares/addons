@@ -144,7 +144,7 @@ class mrp_workcenter_product_cost(models.Model):
                              help="Calculated cost per hour.",
                              compute=_get_cost_all)
     cost_cycle = fields.Float(string="Cost per cycle",
-                              digits=Pp.get_precision('Product costing'),
+                              digits=dp.get_precision('Product costing'),
                               help="Calculated cost per cycle.",
                               compute=_get_cost_all)
     cost_uom = fields.Float(string="Cost per UoM",
