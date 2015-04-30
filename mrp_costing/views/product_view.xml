@@ -149,6 +149,11 @@
 		                            class="oe_link" groups="stock_account.group_inventory_valuation"/>
 		            		</group>
 		            		<group name="cost_details">
+                                <p class="oe_grey" colspan="4">
+                                    Please note that additional costs are shared by all the variants of a product.
+                                    If you modify additional costs from any variant of a product, all variants
+                                    and the product template itself will reflect such changes.
+                                </p>
 		            			<separator string="Additional cost details" colspan="4"/>
 		            			<field name="concept_cost_ids" nolabel="1" widget="one2many_list" height="400" colspan="4"/>
 		            			<button name="default_cost_concepts" string="Clear and import concepts" type="object" class="oe_link" colspan="4"/>
@@ -212,18 +217,24 @@
         </record>
 
 
-        <!--<record id="product_product_tree_view" model="ir.ui.view">-->
-            <!--<field name="name">product.product.tree.mrp_costing</field>-->
-            <!--<field name="model">product.product</field>-->
-            <!--<field name="inherit_id" ref="product.product_tree_view"/>-->
-			<!--<field name="priority" eval="17"/>-->
-            <!--<field name="arch" type="xml">-->
-            	<!--<field name="uom_id" position="after">-->
-            		<!--<field name="material_cost" invisible="1"/>-->
-            		<!--<field name="computed_cost" invisible="1"/>-->
-            	<!--</field>-->
-            <!--</field>-->
-        <!--</record>-->
+
+
+        <!-- We need to inherit this view to correctly display
+        standard_price field when it depends on computed_cost -->
+        <record id="product_product_tree_view" model="ir.ui.view">
+            <field name="name">product.product.tree.mrp_costing</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+			<field name="priority" eval="17"/>
+            <field name="arch" type="xml">
+            	<field name="uom_id" position="after">
+            		<field name="material_cost" invisible="1"/>
+                    <field name="production_cost" invisible="1"/>
+                    <field name="other_concepts_cost" invisible="1"/>
+                    <field name="computed_cost" invisible="1"/>
+            	</field>
+            </field>
+        </record>
 
 		<!--<record id="product_product_kanban_view" model="ir.ui.view">-->
             <!--<field name="name">Product.product.product.kanban.mrp_costing</field>-->

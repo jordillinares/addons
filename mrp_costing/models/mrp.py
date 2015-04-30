@@ -54,7 +54,7 @@ class mrp_bom(models.Model):
 
             # Otros costes
             other_costs = 0.0
-            for other_cost in record.product_id.other_cost_ids:
+            for other_cost in record.product_tmpl_id.other_cost_ids:
                 other_costs += other_cost.cost
             std_cost = record.product_id.material_cost + \
                        record.product_id.production_cost + other_costs
@@ -128,9 +128,6 @@ class mrp_workcenter_product_cost(models.Model):
     capacity_per_cycle = fields.Float(string="Capacity/cycle", required=True,
             help="Quantity of production product (in product's UoM) "
                  "that the workcenter contributes to produce in a cycle.",
-            # Definimos como precisión decimal la mínima necesaria para
-            # almacenar un segundo, que equivale a 0.000277778 horas.
-            # Por tanto, (4,9)
             digits = (4, 9), default=1.0)
     time_cycle = fields.Float(string="Cycle time",
             help="Time needed for this machine to complete"

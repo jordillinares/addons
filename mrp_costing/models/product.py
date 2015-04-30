@@ -269,3 +269,148 @@ class product_template(models.Model):
         return res
 
 
+class product_product(models.Model):
+
+    _inherit = 'product.product'
+
+    material_cost = fields.Float('Material cost',
+                                 digits=dp.get_precision('Product costing'),
+                                 compute='_compute_cost',
+                                 help="Components cost for this product. It "
+                                 "is calculated from the product's BoM with "
+                                 "the lowest sequence number.")
+    production_cost = fields.Float('Production cost',
+                                   digits=dp.get_precision('Product costing'),
+                                   compute='_compute_cost',
+                                   help="Production cost. It is calculated "
+                                   "from the routing of the product's BoM "
+                                   "with  the lowest sequence number. Each "
+                                   "routing  workcenter must have a defined "
+                                   "cost forthis product. See workcenter's "
+                                   "'Per-product costs' tab.")
+    computed_cost = fields.Float('Computed cost',
+                                 digits=dp.get_precision('Product costing'),
+                                 compute='_compute_cost',
+                                 help="Computed cost. It can be manually set"
+                                 " here if this product has not any BoM "
+                                 "linked. Otherwise, it is calculated from "
+                                 " the sum of material, production and other"
+                                 " concepts cost.")
+    standard_price = fields.Float('Cost Price',
+                                 digits=dp.get_precision('Product costing'),
+                                 help="Cost price of the product "
+                                 "used for standard stock valuation in "
+                                 "accounting and used as a base price on "
+                                 "purchase orders. Expressed in the default "
+                                 "unit of measure of the product.",
+                                 company_dependent=True)
+    cost_method = fields.Selection([('standard', 'Standard Price'),
+                                    ('average', 'Average Price'),
+                                    ('real', 'Real Price'),
+                                    ('auto_mpa', 'Auto M+P+A'),
+                                    ],
+                                   string='Costing method',
+                                   required=True,
+                                   copy=True,
+                                   help="Standard Price: The cost price is "
+                                   "manually updated at the end of a specific "
+                                   "period (usually every year).\n"
+                                   "Average Price: The cost price is "
+                                   "recomputed at each incoming shipment and "
+                                   "used for the product valuation.\n"
+                                   "Real Price: The cost price displayed is "
+                                   "the price of the last outgoing product "
+                                   "(will be use in case of inventory loss "
+                                   "for example).\n"
+                                   "Auto M+P+A: The cost price is "
+                                   "automatically calculated as the sum of "
+                                   "Material + Production + Additional costs."
+                                   " If the product has not any defined BoM, "
+                                   " its cost method is only defined by the "
+                                   "additional costs details table.")
+
+    @api.multi
+    def _compute_cost(self):
+        # BEWARE: Material and production cost are both calculated ONLY from
+        # the product's BoM with the lowest sequence number. It does NOT take
+        # into account BoM validity dates nor routes.
+        bom_obj = self.env['mrp.bom']
+        uom_obj = self.env['product.uom']
+        dp_obj = self.env['decimal.precision']
+        material_cost = 0.0
+        production_cost = 0.0
+        oth_conc_cost = 0.0
+        for record in self:
+
+            bom_obj = self.env['mrp.bom']
+            bom_id = bom_obj._bom_find(product_id=record.id)
+            if bom_id:
+                bom = bom_obj.browse(bom_id)
+                # Material cost
+                # bom_qty = BoM's product qty in the default UoM of the product
+                bom_qty = uom_obj._compute_qty(bom.product_uom.id,
+                                               bom.product_qty,
+                                               record.uom_id.id)
+                for bom_line in bom.bom_line_ids:
+                    # bom_line_qty = bom line qty in the default UoM
+                    # of the product
+                    bomline_qty = uom_obj._compute_qty(
+                        bom_line.product_uom.id,
+                        bom_line.product_qty,
+                        bom_line.product_id.uom_id.id)
+                    material_cost += round(bomline_qty * \
+                        bom_line.product_id.standard_price,
+                        dp_obj.precision_get('Product costing'))
+                material_cost = round(material_cost / bom_qty,
+                    dp_obj.precision_get('Product costing'))
+
+                # Production cost (para el mismo bom ya seleccionado para el
+                # coste material)
+                if bom.routing_id:
+                    for workcenter_line in bom.routing_id.workcenter_lines:
+                        wc_cost = 0.0
+                        for workcenter_product_cost in workcenter_line.workcenter_id.product_cost_ids:
+                            if workcenter_product_cost.product_id.id == record.id:
+                                wc_cost += workcenter_product_cost.cost_uom
+                        production_cost += wc_cost
+
+            # Other concepts cost
+            for concept_cost in record.product_tmpl_id.concept_cost_ids:
+                oth_conc_cost += concept_cost.cost or 0.0
+
+            record.material_cost = material_cost
+            record.production_cost = production_cost
+            record.other_concepts_cost = oth_conc_cost
+            record.computed_cost = record.material_cost + \
+                record.production_cost +  record.other_concepts_cost
+
+            if record.cost_method == 'auto_mpa' and \
+                record.standard_price != record.computed_cost:
+                    res_id = 'product.product,' + str(record.id)
+                    self.env.cr.execute("""
+                        UPDATE
+                            ir_property
+                        SET
+                            value_float = %s
+                        WHERE
+                            res_id = '%s'
+                        AND
+                            name = 'standard_price';
+                    """ % (record.computed_cost, res_id))
+
+    @api.onchange('cost_method','computed_cost','concept_cost_ids.cost')
+    def _onchange_cost_method(self):
+        if self.cost_method == 'auto_mpa' and \
+            self.standard_price != self.computed_cost:
+                self.standard_price = self.computed_cost
+
+    @api.one
+    def write(self, vals):
+        res = super(product_product, self).write(vals)
+        if 'cost_method' in vals:
+            if vals['cost_method'] == 'auto_mpa':
+                super(product_product, self).write({'standard_price': self.computed_cost})
+        elif 'concept_cost_ids' in vals:
+            if self.cost_method == 'auto_mpa':
+                super(product_product, self).write({'standard_price': self.computed_cost})
+        return res
