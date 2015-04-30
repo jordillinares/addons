@@ -37,13 +37,45 @@ This module allows to calculate production costs for your manufactured products 
 need to use analytic accounting, which is more flexible, but sometimes is not what the
 customer thinks his company needs to keep track of production costs at a glance.
 
-Calculations are essentially based on the definition of a set of cost concepts in the
-product and the workcenter. The workcenter allows to define costs per product. From each
-workcenter in a route, unitary production costs are calculated for a given product. Cost
-calculation for this product is completed adding the cost concepts defined on its form.
-This way, you get the standard cost of a manufactured product.
+Essentially, this module adds several cost fields and a new costing method to the
+product's form. Fields are 'Material cost', 'Production cost' and 'Other costs'.
+Both three fields are calculated (the latter from a 'other costs' table).
 
-Finally, in a given manufacturing order of that product you can specify each operation
+The new costing method 'Computed M+P+A' makes the original 'standard_price' field
+behave like a fake 'calculated field'. This way, you can manually define a standard
+price for raw materials and other products (through selecting 'standard cost' costing
+method), or you can make Odoo calculate product's costs on several concepts (materials,
+production and other costs). Whenever you change a route, a BoM, or a raw material cost,
+all depending costs will be recalculated.
+
+Material cost is computed for a product from the components of the BoM with the lowest
+sequence number for that product.
+
+Concerning production costs, they can be defined for a workcenter on a per-product basis.
+For each workcenter in a route, unitary production costs are calculated for a given product.
+
+Cost calculation of a product is completed adding the 'other cost concepts' defined on its
+form view.
+
+The sum of these three costs gives you get the standard cost of a manufactured product.
+
+This module keeps into account product variants and their respective costs definition.
+At the variant level, material cost is calculated using the original _bom_find method.
+This BoM is also used to compute the production cost of the variant.
+
+At the template level, calculation is a bit more tricky: material cost is always done
+from the BoM with the lowest sequence number (by now, it does not filter BoMs by validity
+dates, unlike _find_bom. It's a # TODO). If the selected bom has also a variant linked,
+production cost is taken from there. Otherwise, for each workcenter in the route linked
+to the BoM, the cost is calculated from the cost definition with the lowest sequence
+number among all the cost definitions for all variants of the product template.
+That implies that sequences for mrp.workcenter.product.cost are only relevant when
+a) you use product variants, and
+b) a product's (template) BoM is not linked to a variant or a workcenter is used by
+   several variants.
+
+# TODO:
+Finally, in a given manufacturing order of a product you can specify each operation
 duration with an accuracy of up to a second (thanks to my module 'float_time_hms'). From
 the computation of real production times, and the real consumes and production, you'll
 easily get the real cost of a product in an order.

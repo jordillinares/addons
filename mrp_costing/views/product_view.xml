@@ -236,17 +236,19 @@
             </field>
         </record>
 
-		<!--<record id="product_product_kanban_view" model="ir.ui.view">-->
-            <!--<field name="name">Product.product.product.kanban.mrp_costing</field>-->
-            <!--<field name="model">product.product</field>-->
-            <!--<field name="inherit_id" ref="product.product_kanban_view"/>-->
-            <!--<field name="arch" type="xml">-->
-            	<!--<field name="name" position="after">-->
-	            	<!--<field name="material_cost" invisible="1"/>-->
-	            	<!--<field name="computed_cost" invisible="1"/>-->
-            	<!--</field>-->
-            <!--</field>-->
-        <!--</record>-->
+		<record id="product_product_kanban_view" model="ir.ui.view">
+            <field name="name">Product.product.product.kanban.mrp_costing</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_kanban_view"/>
+            <field name="arch" type="xml">
+            	<field name="name" position="after">
+	            	<field name="material_cost" invisible="1"/>
+	            	<field name="computed_cost" invisible="1"/>
+                    <field name="other_concepts_cost" invisible="1"/>
+                    <field name="computed_cost" invisible="1"/>
+            	</field>
+            </field>
+        </record>
     	
     	
     	

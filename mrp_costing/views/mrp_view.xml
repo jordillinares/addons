@@ -150,6 +150,7 @@
                                 <form string="Per-product cost">
                                     <sheet>
                                         <group>
+                                            <field name="sequence"/>
                                             <field name="product_id"/>
                                             <field name="capacity_per_cycle"/>
                                             <field name="product_efficiency"/>
@@ -162,6 +163,7 @@
                                     </sheet>
                                 </form>
                                 <tree string="Per-product cost">
+                                    <field name="sequence"/>
                                     <field name="product_id"/>
                                     <field name="capacity_per_cycle"/>
                                     <field name="product_efficiency"/>

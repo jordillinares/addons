@@ -125,6 +125,9 @@ class mrp_workcenter_product_cost(models.Model):
     # TODO: Filtro para que sólo se muestren productos que usen esta máquina.
     product_id = fields.Many2one(comodel_name="product.product",
             string="Product", required=True)
+    product_tmpl_id = fields.Many2one(comodel_name="product.template", string="Product template",
+        related="product_id.product_tmpl_id")
+    sequence = fields.Integer(string="Sequence", required=True, default=10)
     capacity_per_cycle = fields.Float(string="Capacity/cycle", required=True,
             help="Quantity of production product (in product's UoM) "
                  "that the workcenter contributes to produce in a cycle.",

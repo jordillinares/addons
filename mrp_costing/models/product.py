@@ -138,7 +138,7 @@ class product_template(models.Model):
     cost_method = fields.Selection([('standard', 'Standard Price'),
                                     ('average', 'Average Price'),
                                     ('real', 'Real Price'),
-                                    ('auto_mpa', 'Auto M+P+A'),
+                                    ('auto_mpa', 'Computed (M+P+A)'),
                                     ],
                                    string='Costing method',
                                    required=True,
@@ -153,11 +153,11 @@ class product_template(models.Model):
                                    "the price of the last outgoing product "
                                    "(will be use in case of inventory loss "
                                    "for example).\n"
-                                   "Auto M+P+A: The cost price is "
+                                   "Computed (M+P+A): The cost price is "
                                    "automatically calculated as the sum of "
                                    "Material + Production + Additional costs."
                                    " If the product has not any defined BoM, "
-                                   " its cost method is only defined by the "
+                                   " its cost is only calculated from the "
                                    "additional costs details table.")
 
     @api.one
@@ -183,6 +183,7 @@ class product_template(models.Model):
         bom_obj = self.env['mrp.bom']
         uom_obj = self.env['product.uom']
         dp_obj = self.env['decimal.precision']
+        wc_product_cost_obj = self.env['mrp.workcenter.product.cost']
         material_cost = 0.0
         production_cost = 0.0
         oth_conc_cost = 0.0
@@ -221,11 +222,23 @@ class product_template(models.Model):
                     # Production cost (para ese mismo bom ya seleccionado para el coste material)
                     if bom.routing_id:
                         for workcenter_line in bom.routing_id.workcenter_lines:
-                            wc_cost = 0.0
-                            for workcenter_product_cost in workcenter_line.workcenter_id.product_cost_ids:
-                                if workcenter_product_cost.product_id.product_tmpl_id.id == record.id:
-                                    wc_cost += workcenter_product_cost.cost_uom
-                            production_cost += wc_cost
+                            # We will have only a record for each product due
+                            # to sql_constrains, but we can certainly have
+                            # a record for each product variant of a product,
+                            # so how do we get the template's production cost?
+                            # Keeping in mind that our goal is that the BoM
+                            # with the lowest sequence determines material
+                            # and production cost, we check if this bom
+                            # (already selected here) has a variant. If not,
+                            # it is decided according to the 'sequence'
+                            # field of the per-product cost definition for
+                            # each workcenter.
+                            wc_product_costs = []
+                            if bom.product_id:
+                                wc_product_costs = wc_product_cost_obj.search([('workcenter_id','=', workcenter_line.workcenter_id.id),('product_id','=',bom.product_id.id)], order='sequence')
+                            else:
+                                wc_product_costs = wc_product_cost_obj.search([('workcenter_id','=', workcenter_line.workcenter_id.id),('product_tmpl_id','=',record.id)], order='product_id,sequence')
+                            production_cost += wc_product_costs and wc_product_costs[0].cost_uom or 0.0
 
                 # Other concepts cost
                 for concept_cost in record.concept_cost_ids:
@@ -262,10 +275,12 @@ class product_template(models.Model):
         res = super(product_template, self).write(vals)
         if 'cost_method' in vals:
             if vals['cost_method'] == 'auto_mpa':
-                super(product_template, self).write({'standard_price': self.computed_cost})
+                super(product_template,
+                      self).write({'standard_price': self.computed_cost})
         elif 'concept_cost_ids' in vals:
             if self.cost_method == 'auto_mpa':
-                super(product_template, self).write({'standard_price': self.computed_cost})
+                super(product_template,
+                      self).write({'standard_price': self.computed_cost})
         return res
 
 
@@ -386,17 +401,7 @@ class product_product(models.Model):
 
             if record.cost_method == 'auto_mpa' and \
                 record.standard_price != record.computed_cost:
-                    res_id = 'product.product,' + str(record.id)
-                    self.env.cr.execute("""
-                        UPDATE
-                            ir_property
-                        SET
-                            value_float = %s
-                        WHERE
-                            res_id = '%s'
-                        AND
-                            name = 'standard_price';
-                    """ % (record.computed_cost, res_id))
+                    record.standard_cost = record.computed_cost
 
     @api.onchange('cost_method','computed_cost','concept_cost_ids.cost')
     def _onchange_cost_method(self):
