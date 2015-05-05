@@ -401,13 +401,17 @@ class product_product(models.Model):
 
             if record.cost_method == 'auto_mpa' and \
                 record.standard_price != record.computed_cost:
-                    record.standard_cost = record.computed_cost
+                    record.standard_price = record.computed_cost
 
-    @api.onchange('cost_method','computed_cost','concept_cost_ids.cost')
+    @api.onchange('cost_method','computed_cost')
     def _onchange_cost_method(self):
         if self.cost_method == 'auto_mpa' and \
             self.standard_price != self.computed_cost:
                 self.standard_price = self.computed_cost
+
+    # TODO: Interesa que, con el create, se copien los costes desde la plantilla.
+    # Ahora, al crear un producto, como se crea automáticamente su variante única,
+    # ésta no trae costes.
 
     @api.one
     def write(self, vals):

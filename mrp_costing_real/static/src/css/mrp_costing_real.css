@@ -1,0 +1,15 @@
+label.unitary_cost, span.unitary_cost {
+    font-style: italic;
+    font-weight: normal;
+    font-size: 80%;
+    line-height: 15px;
+    margin-bottom: 16px;
+}
+
+.cost_totals td {
+     padding: 5px;
+}
+
+.panel {
+    background-color: #eee;
+}

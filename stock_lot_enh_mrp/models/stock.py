@@ -23,12 +23,22 @@
 ##############################################################################
 
 from openerp import models, fields, api
+from openerp.exceptions import Warning
 from openerp.tools.translate import _
 
 
 class stock_move(models.Model):
 
     _inherit = 'stock.move'
+
+    def check_tracking(self, cr, uid, move, lot_id, context=None):
+        self.check_tracking_product(cr, uid, move.product_id, lot_id, move.location_id, move.location_dest_id, context=context)
+        if move.product_id.track_production and (move.location_id.usage == 'production' or move.location_dest_id.usage == 'production') and not lot_id:
+            raise Warning(_('You must assign a serial number for the product %s') % (move.product_id.name))
+        # We absolutely don't want this snippet.
+        # if move.raw_material_production_id and move.location_dest_id.usage == 'production' and move.raw_material_production_id.product_id.track_production and not move.consumed_for:
+        #     raise osv.except_osv(_('Warning!'), _("Because the product %s requires it, you must assign a serial number to your raw material %s to proceed further in your production. Please use the 'Produce' button to do so.") % (move.raw_material_production_id.product_id.name, move.product_id.name))
+
 
     # We need 'production_id' to be copy=True for split moves to inherit
     # production_id from original move, because in our version of MRP we can

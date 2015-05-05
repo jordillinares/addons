@@ -68,7 +68,7 @@ class mrp_bom(models.Model):
                     id = %s;
                 """ % (std_cost, record.product_id.id))
 
-    cost = fields.Float(string="Cost", required=False,
+    cost = fields.Float(string="Cost",
             digits_compute = dp.get_precision('Product costing'),
             help=_("Components cost for this BoM."),
             compute=_get_cost)

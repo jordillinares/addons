@@ -6,7 +6,6 @@
     	<record model="ir.ui.view" id="product_template_cost_concept_form_view">
 			<field name="name">product.template.cost.concept.form</field>
 			<field name="model">product.template.cost.concept</field>
-			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Product cost concept">
 					<field name="name" select="1"/>
@@ -18,7 +17,6 @@
 		<record model="ir.ui.view" id="product_template_cost_concept_tree_view">
 			<field name="name">product.template.cost.concept.tree</field>
             <field name="model">product.template.cost.concept</field>
-            <field name="type">tree</field>
             <field name="arch" type="xml">
             	<tree string="Product cost concepts">
                 	<field name="name"/>
@@ -45,7 +43,6 @@
 		<record model="ir.ui.view" id="product_category_cost_concept_form_view">
 			<field name="name">product.category.cost.concept.form</field>
 			<field name="model">product.category.cost.concept</field>
-			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Product category - Additional cost concept">
 					<field name="name" select="1"/>
@@ -57,7 +54,6 @@
 		<record model="ir.ui.view" id="product_category_cost_concept_tree_view">
 			<field name="name">product.category.cost.concept.tree</field>
             <field name="model">product.category.cost.concept</field>
-            <field name="type">tree</field>
             <field name="arch" type="xml">
             	<tree string="Product category - Additional cost concepts">
                 	<field name="name"/>
@@ -72,7 +68,6 @@
     	<record id="product_category_form_view" model="ir.ui.view">
             <field name="name">product.category.form.mrp_costing</field>
             <field name="model">product.category</field>
-            <field name="type">form</field>
             <field name="inherit_id" ref="product.product_category_form_view"/>
             <field name="priority" eval="17"/>
             <field name="arch" type="xml">
@@ -92,7 +87,6 @@
 		<record model="ir.ui.view" id="product_template_cost_item_form_view">
 			<field name="name">product.template.cost.item.form</field>
 			<field name="model">product.template.cost.item</field>
-			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Product - Additional cost item">
 					<field name="name" select="1"/>
@@ -105,7 +99,6 @@
 		<record model="ir.ui.view" id="product_template_cost_item_tree_view">
 			<field name="name">product.template.cost.item.tree</field>
             <field name="model">product.template.cost.item</field>
-            <field name="type">tree</field>
             <field name="arch" type="xml">
             	<tree string="Additional costs">
                 	<field name="name"/>
@@ -121,8 +114,6 @@
     	<record id="product_template_form_view" model="ir.ui.view">
             <field name="name">product_template_form_view_mrp_costing</field>
             <field name="model">product.template</field>
-            <field name="type">form</field>
-            <!--<field name="inherit_id" ref="product.product_normal_form_view"/>-->
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="priority" eval="17"/>
             <field name="arch" type="xml">

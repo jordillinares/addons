@@ -45,3 +45,9 @@ class product_template(models.Model):
                                    "link it to this product to have new lot "
                                    "numbers automatically created when "
                                    "receiving or manufacturing this product.")
+
+    @api.onchange('track_all')
+    def _onchange_track_all(self):
+        self.track_incoming = self.track_all
+        self.track_production = self.track_all
+        self.track_outgoing = self.track_all

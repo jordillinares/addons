@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="mrp_costing_real assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/mrp_costing_real/static/src/css/mrp_costing_real.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>

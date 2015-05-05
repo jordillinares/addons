@@ -104,6 +104,7 @@ the origin MO, the assignation date and responsible person.
     ],
     'conflicts': [
         'product_extended',
+        'mrp_byproduct',
     ],
     'demo': [
     ],

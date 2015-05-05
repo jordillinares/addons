@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- mrp.production tree view -->
+        <record id="mrp_production_tree_view" model="ir.ui.view">
+            <field name="name">mrp.production.tree.mrp.costing.real</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="routing_id" position="after">
+                    <field name="std_material_cost" invisible="1"/>
+                    <field name="std_production_cost" invisible="1"/>
+                    <field name="std_others_cost" invisible="1"/>
+                    <field name="std_cost" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- mrp.production form view -->
+        <record id="mrp_production_form_view" model="ir.ui.view">
+            <field name="name">mrp.production.form.mrp.costing.real</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="priority" eval="17"/>
+            <field name="arch" type="xml">
+
+                <!--<xpath expr="//page[@string='Work Orders']/field[@name='workcenter_lines']/tree/field[@name='hour']" position="replace">-->
+                    <!--<field name="hour" widget="float_time"/>-->
+                <!--</xpath>-->
+                <!--<xpath expr="//page[@string='Work Orders']/field[@name='workcenter_lines']/form/field[@name='hour']" position="replace">-->
+                    <!--<field name="hour" widget="float_time"/>-->
+                <!--</xpath>-->
+
+                <xpath expr="//page[@string='Work Orders']" position="attributes">
+                    <attribute name="string">Operations</attribute>
+                </xpath>
+
+                <xpath expr="//notebook/page[last()]" position="after">
+            		<page string="Costing" attrs="{'invisible': [('state','&lt;&gt;','done')]}">
+                        <group name="cost_details" col="6">
+
+                            <group string="Estimated cost">
+                                <field name="std_material_cost_estimated"/>
+                                <field name="std_material_cost_unit_estimated" class="unitary_cost"/>
+
+                                <field name="std_production_cost_estimated"/>
+                                <field name="std_production_cost_unit_estimated" class="unitary_cost"/>
+
+                                <field name="std_others_cost_estimated"/>
+                                <field name="std_others_cost_unit_estimated" class="unitary_cost"/>
+                            </group>
+
+                            <group string="Cost">
+                                <field name="std_material_cost"/>
+                                <field name="std_material_cost_unit" class="unitary_cost"/>
+
+                                <field name="std_production_cost"/>
+                                <field name="std_production_cost_unit" class="unitary_cost"/>
+
+                                <field name="std_others_cost"/>
+                                <field name="std_others_cost_unit" class="unitary_cost"/>
+                            </group>
+
+                            <group string="Cost difference">
+                                <field name="std_material_cost_balance" widget="float_color_inverted"/>
+                                <field name="std_material_cost_unit_balance" class="unitary_cost" widget="float_color_inverted"/>
+
+                                <field name="std_production_cost_balance" class="cost_bal" widget="float_color_inverted"/>
+                                <field name="std_production_cost_unit_balance" class="unitary_cost" widget="float_color_inverted"/>
+
+                                <field name="std_others_cost_balance" class="cost_bal" widget="float_color_inverted"/>
+                                <field name="std_others_cost_unit_balance" class="unitary_cost" widget="float_color_inverted"/>
+                            </group>
+
+                        </group>
+
+                        <div class="panel">
+
+                        <group name="cost_totals" col="6" class="cost_totals">
+
+                            <group>
+                                <field name="std_cost_estimated"/>
+                                <field name="std_cost_unit_estimated" class="unitary_cost"/>
+                            </group>
+
+                            <group>
+                                <field name="std_cost"/>
+                                <field name="std_cost_unit" class="unitary_cost"/>
+                            </group>
+
+                            <group>
+                                <field name="std_cost_balance" widget="float_color_inverted"/>
+                                <field name="std_cost_unit_balance" class="unitary_cost" widget="float_color_inverted"/>
+                            </group>
+
+                        </group>
+
+                        </div>
+                    </page>
+                </xpath>
+
+                        <!--<group colspan="4" col="20">-->
+                            <!--<label string="" colspan="18"/>-->
+                            <!--<button name="mrp_production_costing_report" string="Informe de costes" type="object" icon="gtk-print"/>-->
+                        <!--</group>-->
+
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -182,9 +182,11 @@ class stock_transfer_details_items(models.TransientModel):
 
     def _get_quick_lot_creation_allowed(self):
         for detail in self:
-            if (detail.packop_id
-                and detail.packop_id.picking_id
-                and detail.packop_id.picking_id.picking_type_code == 'incoming'):
+            if detail.product_id.track_incoming:
+                # if (detail.packop_id
+                #     and detail.packop_id.picking_id
+                #     and detail.packop_id.picking_id.picking_type_code == 'incoming'):
+                #     detail.allows_quick_lot_creating = True
                 detail.allows_quick_lot_creating = True
             else:
                 detail.allows_quick_lot_creating = False
