@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="float_field_color assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/float_field_color/static/src/css/float_field_color.css"/>
+                <script type="text/javascript" src="/float_field_color/static/src/js/float_field_color.js"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
