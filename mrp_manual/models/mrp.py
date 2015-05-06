@@ -54,9 +54,17 @@ class mrp_production(models.Model):
                                         'Produced products',
                                         domain=[('state', 'in', ('done',))])
     produced_qty = fields.Float('Produced qty.',
-                                digits_compute=
-                                dp.get_precision('Product Unit of Measure'),
-                                compute=_produced_qty)
+            digits=dp.get_precision('Product Unit of Measure'),
+            compute=_produced_qty)
+    # On v6.1, this field had no readonly restrictions according to state.
+    workcenter_lines = fields.One2many(
+            comodel_name="mrp.production.workcenter.line",
+            inverse_name="production_id",
+            string="Operations", readonly=True,
+            states={'draft': [('readonly', False)],
+                    'confirmed': [('readonly', False)],
+                    'ready': [('readonly', False)],
+                    'in_production': [('readonly', False)]})
 
     @api.one
     def action_produce(self, production_qty, production_mode, wiz=False,
@@ -71,3 +79,12 @@ class mrp_production(models.Model):
             moves = record.move_lines + record.move_created_ids
             moves.action_cancel()
         return super(mrp_production, self).action_production_end()
+
+
+class mrp_production_workcenter_line(models.Model):
+
+    _inherit = 'mrp.production.workcenter.line'
+
+    # Redefine 'hour' precision to include seconds if
+    # we installed 'float_time_hms' module.
+    hour = fields.Float(string="Time", digits=(4,9))

@@ -264,7 +264,7 @@ class product_template(models.Model):
                                 name = 'standard_price';
                         """ % (record.computed_cost, res_id))
 
-    @api.onchange('cost_method','computed_cost','concept_cost_ids.cost')
+    @api.onchange('cost_method','computed_cost')
     def _onchange_cost_method(self):
         if self.cost_method == 'auto_mpa' and \
             self.standard_price != self.computed_cost:

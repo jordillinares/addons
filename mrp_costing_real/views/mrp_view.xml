@@ -51,7 +51,7 @@
                                 <field name="std_others_cost_unit_estimated" class="unitary_cost"/>
                             </group>
 
-                            <group string="Cost">
+                            <group string="Real cost">
                                 <field name="std_material_cost"/>
                                 <field name="std_material_cost_unit" class="unitary_cost"/>
 
@@ -62,7 +62,7 @@
                                 <field name="std_others_cost_unit" class="unitary_cost"/>
                             </group>
 
-                            <group string="Cost difference">
+                            <group string="Difference">
                                 <field name="std_material_cost_balance" widget="float_color_inverted"/>
                                 <field name="std_material_cost_unit_balance" class="unitary_cost" widget="float_color_inverted"/>
 

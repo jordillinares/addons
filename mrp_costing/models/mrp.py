@@ -131,10 +131,10 @@ class mrp_workcenter_product_cost(models.Model):
     capacity_per_cycle = fields.Float(string="Capacity/cycle", required=True,
             help="Quantity of production product (in product's UoM) "
                  "that the workcenter contributes to produce in a cycle.",
-            digits = (4, 9), default=1.0)
+            digits=(4, 5), default=1.0)
     time_cycle = fields.Float(string="Cycle time",
             help="Time needed for this machine to complete"
-                 " one cycle.")
+                 " one cycle.", digits=(4, 9))
     product_efficiency = fields.Float(string="Efficiency factor",
             help="A factor of 0.9 means a loss of 10% during the production "
                  "process.",

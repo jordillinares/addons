@@ -64,7 +64,13 @@ class mrp_bom(models.Model):
             for wc_use in routing.workcenter_lines:
                 wc = wc_use.workcenter_id
                 for wc_product_cost in wc.product_cost_ids:
-                    if wc_product_cost.product_id.id == bom.product_id.id:
+                    # If the bom is linked to a specific variant or, not being
+                    # so, its template corresponds to the one of the
+                    # wc_product_cost product:
+                    if (bom.product_id.id and wc_product_cost.product_id\
+                            .id == bom.product_id.id) or bom.product_tmpl_id\
+                            .id == wc_product_cost.product_id.product_tmpl_id\
+                            .id:
                         # Esto afectará al consumo de materiales
                         factor = _factor(factor, wc_product_cost\
                             .product_efficiency or 1.0, bom.product_rounding)
@@ -74,8 +80,12 @@ class mrp_bom(models.Model):
                             (bom.product_qty * factor) / \
                             wc_product_cost.capacity_per_cycle)
                         result2.append({
-                            'name': tools.ustr(wc_use.name) + ' - '  + \
-                                    tools.ustr(bom.product_id.name),
+                            'name': ( bom.product_id.name and tools\
+                                    .ustr(wc_use.name) + ' - '  + \
+                                    tools.ustr(bom.product_id.name)) \
+                                    or \
+                                    (tools.ustr(wc_use.name) + ' - '  + \
+                                    tools.ustr(bom.product_tmpl_id.name)),
                             'workcenter_id': wc.id,
                             'sequence': level+(wc_use.sequence or 0),
                             'cycle': cycle,
@@ -90,6 +100,7 @@ class mrp_bom(models.Model):
                                       wc_product_cost.product_efficiency \
                                       or 1.0),9),
                         })
+
         for bom_line_id in bom.bom_line_ids:
             if bom_line_id.date_start \
                 and bom_line_id.date_start > \
@@ -166,27 +177,32 @@ class mrp_production(models.Model):
             digits = dp.get_precision('Product costing'),
             help="Standard material cost of this MO. It is calculated from "
                  "the standard cost of the actually consumed materials.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_production_cost = fields.Float(string="Production cost",
             digits = dp.get_precision('Product costing'),
             help="Standard production cost of this MO. It is calculated from "
                  "the production costs defined on each workcenter in this "
                  "MO's routing.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_others_cost = fields.Float(string="Other costs",
             digits = dp.get_precision('Product costing'),
             help="Sum of standard additional costs.",
-            compute='_cost_all', store=True)
-    std_cost = fields.Float(string="Standard cost",
+            compute='_cost_all', store=True
+            )
+    std_cost = fields.Float(string="Manufacturing cost",
             digits = dp.get_precision('Product costing'),
-            help="Standard cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Cost of this MO.",
+            compute='_cost_all', store=True
+            )
     std_material_cost_estimated = fields.Float(string="Est. material cost",
             digits = dp.get_precision('Product costing'),
             help="Initially estimated standard material cost of this MO. "
                  "It is calculated from the standard cost of the planned "
                  "materials.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_production_cost_estimated = fields.Float(
             string="Est. production cost",
             digits = dp.get_precision('Product costing'),
@@ -194,17 +210,20 @@ class mrp_production(models.Model):
                  "calculated from the production costs defined on each "
                  "workcenter in this MO's routing, according to estimated "
                  "to-produce quantity.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_others_cost_estimated = fields.Float(string="Est. add. cost",
             digits = dp.get_precision('Product costing'),
             help="Sum of the estimated standard additional costs of the "
                  "produced product, according to estimated to-produce "
                  "quantity.",
-            compute='_cost_all', store=True)
-    std_cost_estimated = fields.Float(string="Est. standard cost",
+            compute='_cost_all', store=True
+            )
+    std_cost_estimated = fields.Float(string="Est. manuf. cost",
             digits = dp.get_precision('Product costing'),
-            help="Estimated standard cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Estimated manufacturing cost of this MO.",
+            compute='_cost_all', store=True
+            )
     #=========================================================================
     # Unitary standard cost fields
     #=========================================================================
@@ -212,242 +231,261 @@ class mrp_production(models.Model):
             digits = dp.get_precision('Product costing'),
             help="Unitary (per product UoM) standard material cost of "
                  "this MO.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_production_cost_unit = fields.Float(string="Unit production cost",
             digits = dp.get_precision('Product costing'),
             help="Unitary (per product UoM) standard production cost of "
                  "this MO.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_others_cost_unit = fields.Float(string="Unit additional cost",
             digits = dp.get_precision('Product costing'),
             help="Unitary (per product UoM) additional cost of this MO.",
-            compute='_cost_all', store=True)
-    std_cost_unit = fields.Float(string="Unit standard cost",
+            compute='_cost_all', store=True
+            )
+    std_cost_unit = fields.Float(string="Unit cost",
             digits = dp.get_precision('Product costing'),
-            help="Unitary (per product UoM) standard cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Unitary (per product UoM) cost of this MO.",
+            compute='_cost_all', store=True
+            )
     std_material_cost_unit_estimated = fields.Float(
             string="Est. unit mat. cost",
             digits = dp.get_precision('Product costing'),
             help="Estimated unitary (per product UoM) standard material "
                  "cost of this MO.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_production_cost_unit_estimated = fields.Float(
             string="Est. unit prod. cost",
             digits = dp.get_precision('Product costing'),
             help="Estimated unitary (per product UoM) standard production "
                  "cost of this MO.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     std_others_cost_unit_estimated = fields.Float(
             string="Est. unit add. cost",
             digits = dp.get_precision('Product costing'),
             help="Estimated unitary (per product UoM) additional cost "
                  "of this MO.",
-            compute='_cost_all', store=True)
-    std_cost_unit_estimated = fields.Float(string="Est. unit std. cost",
+            compute='_cost_all', store=True
+            )
+    std_cost_unit_estimated = fields.Float(string="Est. unit manuf. cost",
             digits = dp.get_precision('Product costing'),
-            help="Estimated unitary (per product UoM) standard cost "
+            help="Estimated unitary (per product UoM) manufacturing cost "
                  "of this MO.",
-            compute='_cost_all', store=True)
+            compute='_cost_all', store=True
+            )
     #=========================================================================
     # Cost difference fields
     #=========================================================================
     std_material_cost_balance = fields.Float(
             string="Material cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real standard material cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real standard material "
+                 "cost of this MO.",
+            compute='_cost_all', store=True
+            )
     std_production_cost_balance = fields.Float(
             string="Production cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real production cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real production cost "
+                 "of this MO.",
+            compute='_cost_all', store=True
+            )
     std_others_cost_balance = fields.Float(
             string="Other costs",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real additional cost of this MO.",
-            compute='_cost_all', store=True)
-    std_cost_balance = fields.Float(string="Standard cost",
+            help="Difference between estimated and real additional cost "
+                 "of this MO.",
+            compute='_cost_all', store=True
+            )
+    std_cost_balance = fields.Float(string="Manufacturing cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real standard cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real manufacturing cost "
+                 "of this MO.",
+            compute='_cost_all', store=True
+            )
     std_material_cost_unit_balance = fields.Float(
             string="Unit mat. cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real unitary standard material cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real unitary standard "
+                 "material cost of this MO.",
+            compute='_cost_all', store=True
+            )
     std_production_cost_unit_balance = fields.Float(
             string="Unit prod. cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real unitary production material cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real unitary production "
+                 "material cost of this MO.",
+            compute='_cost_all', store=True
+            )
     std_others_cost_unit_balance = fields.Float(
             string="Unit add. cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real unitary additional cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real unitary additional "
+                 "cost of this MO.",
+            compute='_cost_all', store=True
+            )
     std_cost_unit_balance = fields.Float(
-            string="Unit std. cost",
+            string="Unit cost",
             digits = dp.get_precision('Product costing'),
-            help="Difference between estimated and real unitary standard cost of this MO.",
-            compute='_cost_all', store=True)
+            help="Difference between estimated and real unitary manufacturing"
+                 " cost of this MO.",
+            compute='_cost_all', store=True
+            )
 
+    @api.one
     @api.depends('state')
     def _cost_all(self):
-        bom_obj = self.env['mrp.bom']
         product_uom_obj = self.env['product.uom']
         precision = self.env['decimal.precision'].precision_get(
             'Product costing')
-        for record in self:
-            vals = {}
 
-            # ESTIMATED standard costs. Computed when MO is confirmed.
-            if record.state in ('confirmed', 'ready'):
-                record.std_material_cost_estimated = 0.0
-                record.std_production_cost_estimated = 0.0
-                record.std_others_cost_estimated = 0.0
-                record.std_cost_estimated = 0.0
-                record.std_material_cost_unit_estimated = 0.0
-                record.std_production_cost_unit_estimated = 0.0
-                record.std_others_cost_unit_estimated = 0.0
-                record.std_cost_unit_estimated = 0.0
+        # ESTIMATED standard costs. Computed when MO is confirmed.
+        self.std_material_cost_estimated = 0.0
+        self.std_production_cost_estimated = 0.0
+        self.std_others_cost_estimated = 0.0
+        self.std_cost_estimated = 0.0
+        self.std_material_cost_unit_estimated = 0.0
+        self.std_production_cost_unit_estimated = 0.0
+        self.std_others_cost_unit_estimated = 0.0
+        self.std_cost_unit_estimated = 0.0
 
-                for planned in record.product_lines:
-                    default_uom = planned.product_id.uom_id.id
-                    planned_qty = product_uom_obj._compute_qty(
-                        planned.product_uom.id,
-                        planned.product_qty,
-                        default_uom)
-                    planned.std_cost = planned_qty * \
-                                       planned.product_id.standard_price
-                    record.std_material_cost_estimated += planned.std_cost
+        for planned in self.product_lines:
+            default_uom = planned.product_id.uom_id.id
+            planned_qty = product_uom_obj._compute_qty(
+                planned.product_uom.id,
+                planned.product_qty,
+                default_uom)
+            planned.std_cost = planned_qty * \
+                               planned.product_id.standard_price
+            self.std_material_cost_estimated += planned.std_cost
 
-                default_uom = record.product_id.uom_id.id
-                to_produce_qty = product_uom_obj._compute_qty(
-                    record.product_uom.id,
-                    record.product_qty,
+        default_uom = self.product_id.uom_id.id
+        to_produce_qty = product_uom_obj._compute_qty(
+            self.product_uom.id,
+            self.product_qty,
+            default_uom)
+        for workcenter_line in self.workcenter_lines:
+            wc_cost = 0.0
+            for workcenter_product_cost in workcenter_line\
+                    .workcenter_id.product_cost_ids:
+                if workcenter_product_cost.product_id\
+                        .id == self.product_id.id:
+                    wc_cost += workcenter_product_cost.cost_uom *\
+                               to_produce_qty
+            workcenter_line.est_prod_cost = wc_cost
+            self.std_production_cost_estimated += wc_cost
+
+        self.std_others_cost_estimated = self.product_id.\
+            other_concepts_cost * to_produce_qty
+        self.std_cost_estimated =\
+            self.std_material_cost_estimated + \
+            self.std_production_cost_estimated + \
+            self.std_others_cost_estimated
+
+        self.std_material_cost_unit_estimated = round(
+            self.std_material_cost_estimated / to_produce_qty,
+            precision)
+        self.std_production_cost_unit_estimated = round(
+            self.std_production_cost_estimated / to_produce_qty,
+            precision)
+        self.std_others_cost_unit_estimated = round(
+            self.std_others_cost_estimated / to_produce_qty,
+            precision)
+        self.std_cost_unit_estimated = round(
+            self.std_cost_estimated / to_produce_qty,
+            precision)
+
+        # COMPUTED standard costs. Computed when MO is closed.
+        self.std_material_cost = 0.0
+        self.std_production_cost = 0.0
+        self.std_others_cost = 0.0
+        self.std_cost = 0.0
+        self.std_material_cost_unit = 0.0
+        self.std_production_cost_unit = 0.0
+        self.std_others_cost_unit = 0.0
+        self.std_cost_unit = 0.0
+        self.std_material_cost_balance = 0.0
+        self.std_production_cost_balance = 0.0
+        self.std_others_cost_balance = 0.0
+        self.std_cost_balance = 0.0
+        self.std_material_cost_unit_balance = 0.0
+        self.std_production_cost_unit_balance = 0.0
+        self.std_others_cost_unit_balance = 0.0
+        self.std_cost_unit_balance = 0.0
+
+        for consumed in self.move_lines2:
+            if consumed.state == 'done':
+                default_uom = consumed.product_id.uom_id.id
+                consumed_qty = product_uom_obj._compute_qty(
+                    consumed.product_uom.id,
+                    consumed.product_qty,
                     default_uom)
-                for workcenter_line in record.workcenter_lines:
-                    wc_cost = 0.0
-                    for workcenter_product_cost in workcenter_line\
-                            .workcenter_id.product_cost_ids:
-                        if workcenter_product_cost.product_id\
-                                .id == record.product_id.id:
-                            wc_cost += workcenter_product_cost.cost_uom *\
-                                       to_produce_qty
-                    workcenter_line.est_prod_cost = wc_cost
-                    record.std_production_cost_estimated += wc_cost
+                consumed.std_cost = consumed_qty * \
+                    consumed.product_id.standard_price
+                self.std_material_cost += consumed.std_cost
 
-                record.std_others_cost_estimated = record.product_id.\
-                    other_concepts_cost * to_produce_qty
-                record.std_cost_estimated =\
-                    record.std_material_cost_estimated + \
-                    record.std_production_cost_estimated + \
-                    record.std_others_cost_estimated
-
-                record.std_material_cost_unit_estimated = round(
-                    record.std_material_cost_estimated / to_produce_qty,
-                    precision)
-                record.std_production_cost_unit_estimated = round(
-                    record.std_production_cost_estimated / to_produce_qty,
-                    precision)
-                record.std_others_cost_unit_estimated = round(
-                    record.std_others_cost_estimated / to_produce_qty,
-                    precision)
-                record.std_cost_unit_estimated = round(
-                    record.std_cost_estimated / to_produce_qty,
-                    precision)
-
-            # COMPUTED standard costs. Computed when MO is closed.
-            elif record.state == 'done':
-                record.std_material_cost = 0.0
-                record.std_production_cost = 0.0
-                record.std_others_cost = 0.0
-                record.std_cost = 0.0
-                record.std_material_cost_unit = 0.0
-                record.std_production_cost_unit = 0.0
-                record.std_others_cost_unit = 0.0
-                record.std_cost_unit = 0.0
-                record.std_material_cost_balance = 0.0
-                record.std_production_cost_balance = 0.0
-                record.std_others_cost_balance = 0.0
-                record.std_cost_balance = 0.0
-                record.std_material_cost_unit_balance = 0.0
-                record.std_production_cost_unit_balance = 0.0
-                record.std_others_cost_unit_balance = 0.0
-                record.std_cost_unit_balance = 0.0
-
-                for consumed in record.move_lines2:
-                    if consumed.state == 'done':
-                        default_uom = consumed.product_id.uom_id.id
-                        consumed_qty = product_uom_obj._compute_qty(
-                            consumed.product_uom.id,
-                            consumed.product_qty,
-                            default_uom)
-                        consumed.std_cost = consumed_qty * \
-                            consumed.product_id.standard_price
-                        record.std_material_cost += consumed.std_cost
-
-                default_uom = record.product_id.uom_id.id
-                produced_qty = product_uom_obj._compute_qty(
-                    record.product_uom.id,
-                    record.produced_qty,
-                    default_uom)
-                for workcenter_line in record.workcenter_lines:
-                    wc_cost = 0.0
-                    for workcenter_product_cost in workcenter_line\
-                            .workcenter_id.product_cost_ids:
-                        if workcenter_product_cost.product_id\
-                                .id == record.product_id.id:
-                            wc_cost = round(
-                                (workcenter_product_cost.cost_hour * \
-                                 workcenter_line.hour) / \
-                                workcenter_product_cost.product_efficiency,
-                                precision)
-                    workcenter_line.prod_cost = wc_cost
-                    record.std_production_cost += wc_cost
-
-                record.std_others_cost = record.product_id\
-                    .other_concepts_cost * produced_qty
-                record.std_cost = record.std_material_cost + \
-                                  record.std_production_cost + \
-                                  record.std_others_cost
-
-                if produced_qty:
-                    record.std_material_cost_unit = round(
-                        record.std_material_cost / produced_qty,
+        default_uom = self.product_id.uom_id.id
+        produced_qty = product_uom_obj._compute_qty(
+            self.product_uom.id,
+            self.produced_qty,
+            default_uom)
+        for workcenter_line in self.workcenter_lines:
+            wc_cost = 0.0
+            for workcenter_product_cost in workcenter_line\
+                    .workcenter_id.product_cost_ids:
+                if workcenter_product_cost.product_id\
+                        .id == self.product_id.id:
+                    wc_cost = round(
+                        (workcenter_product_cost.cost_hour * \
+                         workcenter_line.hour) / \
+                        workcenter_product_cost.product_efficiency,
                         precision)
-                    record.std_production_cost_unit = round(
-                        record.std_production_cost / produced_qty,
-                        precision)
-                    record.std_others_cost_unit = round(
-                        record.std_others_cost / produced_qty,
-                        precision)
-                    record.std_cost_unit = round(
-                        record.std_cost / produced_qty,
-                        precision)
+            workcenter_line.prod_cost = wc_cost
+            self.std_production_cost += wc_cost
 
-                record.std_material_cost_balance = record\
-                    .std_material_cost - record.std_material_cost_estimated
-                record.std_production_cost_balance = record\
-                    .std_production_cost - \
-                    record.std_production_cost_estimated
-                record.std_others_cost_balance = record\
-                    .std_others_cost - record.std_others_cost_estimated
-                record.std_cost_balance = record.std_cost - \
-                    record.std_cost_estimated
-                record.std_material_cost_unit_balance = record\
-                    .std_material_cost_unit - \
-                    record.std_material_cost_unit_estimated
-                record.std_production_cost_unit_balance = record\
-                    .std_production_cost_unit - \
-                    record.std_production_cost_unit_estimated
-                record.std_others_cost_unit_balance = record\
-                    .std_others_cost_unit - \
-                    record.std_others_cost_unit_estimated
-                record.std_cost_unit_balance = record\
-                    .std_cost_unit - \
-                    record.std_cost_unit_estimated
+        self.std_others_cost = self.product_id\
+            .other_concepts_cost * produced_qty
+        self.std_cost = self.std_material_cost + \
+                          self.std_production_cost + \
+                          self.std_others_cost
+
+        if produced_qty:
+            self.std_material_cost_unit = round(
+                self.std_material_cost / produced_qty,
+                precision)
+            self.std_production_cost_unit = round(
+                self.std_production_cost / produced_qty,
+                precision)
+            self.std_others_cost_unit = round(
+                self.std_others_cost / produced_qty,
+                precision)
+            self.std_cost_unit = round(
+                self.std_cost / produced_qty,
+                precision)
+
+        self.std_material_cost_balance = self\
+            .std_material_cost - self.std_material_cost_estimated
+        self.std_production_cost_balance = self\
+            .std_production_cost - \
+            self.std_production_cost_estimated
+        self.std_others_cost_balance = self\
+            .std_others_cost - self.std_others_cost_estimated
+        self.std_cost_balance = self.std_cost - \
+            self.std_cost_estimated
+        self.std_material_cost_unit_balance = self\
+            .std_material_cost_unit - \
+            self.std_material_cost_unit_estimated
+        self.std_production_cost_unit_balance = self\
+            .std_production_cost_unit - \
+            self.std_production_cost_unit_estimated
+        self.std_others_cost_unit_balance = self\
+            .std_others_cost_unit - \
+            self.std_others_cost_unit_estimated
+        self.std_cost_unit_balance = self.std_cost_unit - \
+            self.std_cost_unit_estimated
 
 
 class mrp_production_product_line(models.Model):
@@ -467,5 +505,5 @@ class mrp_production_workcenter_line(models.Model):
     prod_cost = fields.Float(string="Production cost",
             digits = dp.get_precision('Product costing'))
     est_hour = fields.Float(string="Est. time",
-            digits = dp.get_precision('Product costing'),
-            help = "Estimated operation duration.")
+            help = "Estimated operation duration.",
+            digits=(4,9))
