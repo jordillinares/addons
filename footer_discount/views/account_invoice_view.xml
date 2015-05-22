@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+    	<!-- outgoing invoice form view -->
+    	<record id="invoice_form" model="ir.ui.view">
+            <field name="name">account.invoice.form.footer_discount</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_untaxed']/.." position="before">
+                    <group name="footer_discounts" groups="footer_discount.group_discount_sale_footer">
+                        <group>
+                            <field name="partner_disc"/>
+                        </group>
+                        <group>
+                            <field name="add_disc"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='amount_untaxed']" position="before">
+                    <field name="base_amount" widget='monetary' options="{'currency_field': 'currency_id'}" groups="footer_discount.group_discount_sale_footer"/>
+                    <field name="partner_disc_amt" widget='monetary' options="{'currency_field': 'currency_id'}" groups="footer_discount.group_discount_sale_footer"/>
+                    <field name="add_disc_amt" widget='monetary' options="{'currency_field': 'currency_id'}" groups="footer_discount.group_discount_sale_footer"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- incoming invoice form view -->
+        <record id="invoice_supplier_form" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.footer_discount</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_untaxed']/.." position="before">
+                    <group name="footer_discounts" groups="footer_discount.group_discount_purchase_footer">
+                        <group>
+                            <field name="partner_disc"/>
+                        </group>
+                        <group>
+                            <field name="add_disc"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='amount_untaxed']" position="before">
+                    <field name="base_amount" widget='monetary' options="{'currency_field': 'currency_id'}" groups="footer_discount.group_discount_purchase_footer"/>
+                    <field name="partner_disc_amt" widget='monetary' options="{'currency_field': 'currency_id'}" groups="footer_discount.group_discount_purchase_footer"/>
+                    <field name="add_disc_amt" widget='monetary' options="{'currency_field': 'currency_id'}" groups="footer_discount.group_discount_purchase_footer"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

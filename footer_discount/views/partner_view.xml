@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+    	<!-- partner form view (inherited from product module) -->
+        <record id="view_partner_property_form" model="ir.ui.view">
+            <field name="name">res.partner.purchase.property.form.footer_discount</field>
+            <field name="model">res.partner</field>
+			<field name="inherit_id" ref="purchase.view_partner_property_form"/>
+			<!-- <field name="priority" eval="36"/> 'purchase' module has this priority in this view. Wow! -->
+            <field name="arch" type="xml">
+                <field name="property_product_pricelist" position="after">
+                	<field name="sale_partner_discount" groups="footer_discount.group_discount_sale_footer"/>
+                </field>
+                <field name="property_product_pricelist_purchase" position="after">
+                	<field name="purchase_partner_discount" groups="footer_discount.group_discount_purchase_footer"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

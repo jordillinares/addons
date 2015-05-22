@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+         <record id="config_use_sale_footer_discount" model="ir.config_parameter">
+            <field name="key">use_sale_footer_discount</field>
+            <field name="value">1</field>
+            <field name="group_ids" eval="[(4, ref('base.group_system')), (4, ref('footer_discount.group_discount_sale_footer'))]" />
+        </record>
+
+        <record id="config_use_purchase_footer_discount" model="ir.config_parameter">
+            <field name="key">use_purchase_footer_discount</field>
+            <field name="value">1</field>
+            <field name="group_ids" eval="[(4, ref('base.group_system')),(4, ref('footer_discount.group_discount_purchase_footer'))]" />
+        </record>
+
+    </data>
+</openerp>
