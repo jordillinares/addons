@@ -2,10 +2,41 @@
 
 ##CONTENTS
 
+###float_field_color
+This module extends the float field widget creating two new widgets: 'float_color' and 'float_color_inverted',
+which automatically set the font color accoding to the float value sign.
+
+USAGE: declare a float field with widget='float_color' to display positive values in green color and negative
+ones in red, or with 'float_color_inverted' to invert the color rule.
+
 ###float_time_hms
 Replaces the format of the 'float_time' widget, which is hh:mm, by hh:mm:ss, as there are some industries on which
 some processes/operations are as short as a few seconds. This fact is specially relevant when measuring cycle
 times in manufacturing.
+
+###footer_discount
+This module:
+
+-   Adds two default discount fields to the partner form: sale and purchase discount.
+
+-   Adds two discount fields (partner discount and additional discount) to the footer
+    of each sale/purchase document (i.e. order and invoice).
+
+-   For each new document, picks the default partner discount from the partner form.
+
+-   Propagates footer discounts from purchase/sales orders to invoice, be it generated
+    from the order itself or from a picking.
+
+-   Propagates footer discounts from original invoice to refund.
+
+-   Keeps into account these discounts on financial moves and payment terms generation.
+
+Discount fields added by this module can be hidden by disabling their corresponding checkbox on both sale and
+purchase configuration settings. Changes on these two checkboxes are linked to ir_config_param values, so when
+you uncheck the boxes the discount fields on purchase/sale documents are not shown, and default value for the
+partner discount field on each new document is set to 0 (without using these parameters, you would be able to 
+hide the discount fields on new documents, but partner discount field would still be defaulted to the partner's
+form 'default discount' value).
 
 ###l10n_es_cnae_2009
 Adds a new entity to manage the list of economic activities defined in CNAE 2009, which is a version of european NACE.
@@ -51,6 +82,16 @@ A custom widget 'multi_reference' (bad name, in fact it extends FieldMany2One wi
 displaying it as a set of links to records of different models. You can see a working example on my 'stock_lot_enh_base'
 module. Please notice that this is working properly on form view, but not on list  view or hyerarchical tree view, due
 to my limited knowledge of JS/JQuery.
+
+###stock_barcode_sound
+This module adds two little improvements to the processing of picking lines through the JS barcode interface:
+
+-   When a barcode is scanned, the interface window is scrolled to show the
+    scanned element as the first one. That's specially useful if your picking
+    has a lot of lines.
+
+-   When a barcode is scanned and processed a different sound is played
+    depending on if the barcode has been found or not.
 
 ###stock_lot_enh_base
 Adds some features to lot management in Odoo:
