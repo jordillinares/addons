@@ -2,6 +2,9 @@
 
 ##CONTENTS
 
+###crm_unique_email
+A simple module that warns you when you try to create a new CRM lead with an email that already exists.
+
 ###float_field_color
 This module extends the float field widget creating two new widgets: 'float_color' and 'float_color_inverted',
 which automatically set the font color accoding to the float value sign.
