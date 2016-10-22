@@ -32,6 +32,8 @@
     by hh:mm:ss, as there are some industries on which some processes are as
     short as a few seconds. This fact is specially relevant when measuring
     cycle times in manufacturing.
+    **for use this function in kanban view must call the "kanban_float_time" function
+    Example: t-esc="kanban_float_time(field.raw_value)"**
     """,
     'website': 'http://www.bigandopen.com',
     'images': [
