@@ -1,11 +1,7 @@
 openerp.float_time_hms = function(instance){
 
 
-
-    original_format_value = instance.web.format_value;
-    instance.web.format_value = function (value, descriptor, value_if_empty) {
-        switch (descriptor.widget || descriptor.type || (descriptor.field && descriptor.field.type)) {
-            case 'float_time':
+    var format_value = function( value){
                 var pattern = '%02d:%02d:%02d';
                 if (value < 0) {
                     value = Math.abs(value);
@@ -25,6 +21,19 @@ openerp.float_time_hms = function(instance){
                     min = min + 1;
                 }
                 return _.str.sprintf(pattern, hour, min, sec);
+    }
+
+
+    instance.web_kanban.KanbanRecord.include({
+           kanban_float_time: function(value) {
+		return format_value(value);
+	    },
+    });
+    original_format_value = instance.web.format_value;
+    instance.web.format_value = function (value, descriptor, value_if_empty) {
+        switch (descriptor.widget || descriptor.type || (descriptor.field && descriptor.field.type)) {
+            case 'float_time':
+                return format_value(value);
         }
         return original_format_value(value, descriptor, value_if_empty);
     };
